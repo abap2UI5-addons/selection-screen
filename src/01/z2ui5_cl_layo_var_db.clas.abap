@@ -81,7 +81,7 @@ CLASS z2ui5_cl_layo_var_db IMPLEMENTATION.
 
     SELECT FROM z2ui5_t_13
         FIELDS *
-        WHERE report = @report
+        WHERE classname = @report
         INTO TABLE @result->mt_variant.
 
   ENDMETHOD.
