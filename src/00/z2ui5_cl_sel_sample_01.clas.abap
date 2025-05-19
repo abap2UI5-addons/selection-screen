@@ -1,11 +1,11 @@
-CLASS z2ui5_cl_layo_sample_01 DEFINITION PUBLIC.
+CLASS z2ui5_cl_sel_sample_01 DEFINITION PUBLIC.
 
   PUBLIC SECTION.
     INTERFACES z2ui5_if_app.
 
     DATA mv_tabname     TYPE string VALUE `T100`.
     DATA mr_table       TYPE REF TO data.
-    DATA mo_multiselect TYPE REF TO z2ui5_cl_layo_selscreen.
+    DATA mo_multiselect TYPE REF TO z2ui5_cl_sel_multisel.
     DATA client TYPE REF TO z2ui5_if_client.
     DATA mv_expanded TYPE abap_bool VALUE abap_true.
 
@@ -21,7 +21,7 @@ CLASS z2ui5_cl_layo_sample_01 DEFINITION PUBLIC.
 ENDCLASS.
 
 
-CLASS z2ui5_cl_layo_sample_01 IMPLEMENTATION.
+CLASS z2ui5_cl_sel_sample_01 IMPLEMENTATION.
 
   METHOD on_event.
 
@@ -60,14 +60,6 @@ CLASS z2ui5_cl_layo_sample_01 IMPLEMENTATION.
                                  shownavbutton  = client->check_app_prev_stack( ) ).
 
     DATA(vbox) = view->vbox( ).
-
-*    ->input( value       = mv_tabname
-*                                       enabled    = abap_false
-*                                       description = `Tablename` ).
-
-*    vbox->button( text  = `GO`
-*                  press = client->_event( 'TAB' ) ).
-
 
     DATA(lo_panel) = vbox->panel(
          expandable = abap_true
@@ -126,7 +118,11 @@ CLASS z2ui5_cl_layo_sample_01 IMPLEMENTATION.
   METHOD on_init.
 
     mr_table = z2ui5_cl_util=>rtti_create_tab_by_name( mv_tabname ).
-    mo_multiselect = z2ui5_cl_layo_selscreen=>factory_by_name( mv_tabname ).
+    mo_multiselect = z2ui5_cl_sel_multisel=>factory_by_name(
+                       val       = mv_tabname
+                      s_variant =  value #( handle01 = 'TEST' )
+                     ).
+
     view_display( ).
 
   ENDMETHOD.

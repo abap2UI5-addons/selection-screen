@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>Z2UI5_CL_LAYO_SAMPLE_01</CLSNAME>
+    <CLSNAME>Z2UI5_CL_SEL_VAR_POP_SAVE</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>variant - integrated ranges</DESCRIPT>
+    <DESCRIPT>variant - popup save</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

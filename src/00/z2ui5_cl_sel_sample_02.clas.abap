@@ -1,4 +1,4 @@
-CLASS z2ui5_cl_layo_sample_02 DEFINITION PUBLIC.
+CLASS z2ui5_cl_sel_sample_02 DEFINITION PUBLIC.
 
   PUBLIC SECTION.
 
@@ -16,7 +16,8 @@ CLASS z2ui5_cl_layo_sample_02 DEFINITION PUBLIC.
     TYPES ty_t_table TYPE STANDARD TABLE OF ty_s_tab WITH EMPTY KEY.
 
     DATA mt_table TYPE ty_t_table.
-    DATA mt_filter TYPE z2ui5_cl_util=>ty_t_filter_multi.
+    DATA mo_variant TYPE REF TO z2ui5_cl_sel_multisel_pop.
+*    DATA mt_filter TYPE z2ui5_cl_util=>ty_t_filter_multi.
 
   PROTECTED SECTION.
     DATA client TYPE REF TO z2ui5_if_client.
@@ -29,7 +30,7 @@ CLASS z2ui5_cl_layo_sample_02 DEFINITION PUBLIC.
 ENDCLASS.
 
 
-CLASS z2ui5_cl_layo_sample_02 IMPLEMENTATION.
+CLASS z2ui5_cl_sel_sample_02 IMPLEMENTATION.
 
 
   METHOD on_event.
@@ -39,7 +40,15 @@ CLASS z2ui5_cl_layo_sample_02 IMPLEMENTATION.
         set_data( ).
         client->view_model_update( ).
       WHEN `PREVIEW_FILTER`.
-        client->nav_app_call( z2ui5_cl_layo_pop_range=>factory( mt_filter ) ).
+        client->nav_app_call( mo_variant ).
+*        z2ui5_cl_sel_multisel_pop=>factory(
+*                                val             = mt_filter
+**                                check_db_active = abap_true
+**                                var_check_user  = abap_true
+*                                var_handle1     = 'TEST_POP'
+**                                var_handle2     =
+**                                var_handle3     =
+*                              ) ).
       WHEN 'BACK'.
         client->nav_app_leave( ).
     ENDCASE.
@@ -59,7 +68,7 @@ CLASS z2ui5_cl_layo_sample_02 IMPLEMENTATION.
 
     z2ui5_cl_util=>filter_itab(
       EXPORTING
-       filter = mt_filter
+       filter = mo_variant->mo_multiselect->ms_result-t_filter
       CHANGING
         val   = mt_table ).
 
@@ -112,33 +121,20 @@ CLASS z2ui5_cl_layo_sample_02 IMPLEMENTATION.
 
     IF client->check_on_init( ).
 
-      mt_filter = z2ui5_cl_layo_pop_range=>read_default(
-*        EXPORTING
-*          var_handle1 = SY-REPID
-*          var_handle2 =
-*          var_handle3 =
-*        RECEIVING
-*          result      =
-       )-t_filter.
-
-      IF mt_filter IS INITIAL.
-
-        mt_filter = z2ui5_cl_util=>filter_get_multi_by_data( mt_table ).
-        DELETE mt_filter WHERE name = `SELKZ`.
-
-      ELSE.
-        set_data( ).
-      ENDIF.
-
+      mo_variant = z2ui5_cl_sel_multisel_pop=>factory_by_data(
+        data             = mt_table
+        var_handle1     = 'TEST_POP'
+                            ).
+      set_data( ).
       view_display( ).
       RETURN.
     ENDIF.
 
     IF client->check_on_navigated( ).
       TRY.
-          DATA(lo_value_help) = CAST z2ui5_cl_layo_pop_range( client->get_app_prev( ) ).
+          DATA(lo_value_help) = CAST z2ui5_cl_sel_multisel_pop( client->get_app_prev( ) ).
           IF lo_value_help->result( )-check_confirmed = abap_true.
-            mt_filter = lo_value_help->result( )-t_filter.
+            mo_variant->mo_multiselect->ms_result-t_filter = lo_value_help->result( )-t_filter.
             set_data( ).
             client->view_model_update( ).
           ENDIF.
