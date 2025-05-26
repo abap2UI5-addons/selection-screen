@@ -47,6 +47,7 @@ CLASS z2ui5_cl_sel_multisel DEFINITION
     CLASS-METHODS factory_by_data
       IMPORTING
         val             TYPE any
+        s_variant       TYPE z2ui5_cl_sel_var_db=>ty_s_db OPTIONAL
         check_popup     TYPE abap_bool OPTIONAL
       RETURNING
         VALUE(r_result) TYPE REF TO z2ui5_cl_sel_multisel.
@@ -94,6 +95,7 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
 
     r_result = factory_by_filter( z2ui5_cl_util=>filter_get_multi_by_data( val ) ).
     r_result->mv_check_popup = check_popup.
+    r_result->ms_variant = s_variant.
     r_result->set_var_default( ).
 
   ENDMETHOD.
@@ -263,10 +265,11 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
 
   METHOD factory_by_name.
 
-    r_result = factory_by_data( z2ui5_cl_util=>rtti_create_tab_by_name( val ) ).
+    r_result = factory_by_data(
+                 val         = z2ui5_cl_util=>rtti_create_tab_by_name( val )
+                 s_variant   = s_variant
+               ).
     r_result->ms_result-tab_name = val.
-    r_result->ms_variant = s_variant.
-    r_result->set_var_default( ).
 
   ENDMETHOD.
 
@@ -274,9 +277,12 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
 
     DATA(ls_default) = z2ui5_cl_sel_var_db=>db_read_default( ms_variant ).
 
-    z2ui5_cl_util=>xml_parse( EXPORTING xml = ls_default-data
-                              IMPORTING any = ms_result
-   ).
+    IF ls_default-data IS NOT INITIAL.
+      z2ui5_cl_util=>xml_parse( EXPORTING xml = ls_default-data
+                                IMPORTING any = ms_result
+     ).
+
+    ENDIF.
 
   ENDMETHOD.
 
