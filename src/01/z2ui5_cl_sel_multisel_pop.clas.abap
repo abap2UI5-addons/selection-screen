@@ -19,6 +19,7 @@ CLASS z2ui5_cl_sel_multisel_pop DEFINITION
       RETURNING
         VALUE(r_result) TYPE REF TO z2ui5_cl_sel_multisel_pop.
 
+
     TYPES:
       BEGIN OF ty_s_result,
         t_filter        TYPE z2ui5_cl_util=>ty_t_filter_multi,
@@ -75,9 +76,6 @@ CLASS z2ui5_cl_sel_multisel_pop IMPLEMENTATION.
                                  contentheight = `50%`
                                  contentwidth  = `50%`
                                  title         = 'Define Filter Conditons' ).
-
-
-
 
     mo_multiselect->set_output( client = client view = lo_popup ).
 
