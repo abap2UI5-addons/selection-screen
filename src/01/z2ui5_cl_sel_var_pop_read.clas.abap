@@ -35,8 +35,6 @@ CLASS z2ui5_cl_sel_var_pop_read DEFINITION
 
     CLASS-METHODS factory
       IMPORTING
-*        val             TYPE z2ui5_cl_util=>ty_t_filter_multi
-*        check_db_active TYPE abap_bool DEFAULT abap_true
         var_check_user  TYPE abap_bool DEFAULT abap_true
         var_handle1     TYPE clike     DEFAULT sy-repid
         var_handle2     TYPE clike     OPTIONAL
@@ -66,9 +64,7 @@ CLASS z2ui5_cl_sel_var_pop_read DEFINITION
         VALUE(result) TYPE ty_s_result.
 
   PROTECTED SECTION.
-    DATA check_db_active TYPE abap_bool.
-    DATA client          TYPE REF TO z2ui5_if_client.
-    DATA mv_popup_name   TYPE LINE OF string_table.
+    DATA client TYPE REF TO z2ui5_if_client.
 
     METHODS popup_variant_read.
     METHODS init.
@@ -83,10 +79,8 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
   METHOD db_read.
 
     mt_variant_db = z2ui5_cl_sel_var_db=>db_read( s_info = VALUE #( uname    = ms_variant-uname
-                                                                name     = ms_variant-handle2
-                                                                handle01 = ms_variant-handle1
-                                              )
-     ).
+                                                                    handle01 = ms_variant-handle1
+                                                                    handle02 = ms_variant-handle2 ) ).
 
     CLEAR mt_variant.
     LOOP AT mt_variant_db REFERENCE INTO DATA(lr_var).
@@ -103,8 +97,7 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
     r_result->ms_variant = VALUE #( uname   = COND #( WHEN var_check_user = abap_true THEN sy-uname )
                                     handle1 = var_handle1
                                     handle2 = var_handle2
-                                    handle3 = var_handle3
-    ).
+                                    handle3 = var_handle3 ).
 
   ENDMETHOD.
 
@@ -119,33 +112,33 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
 
     DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
 
-    DATA(dialog) = popup->dialog( title         = 'Variant Read'
+    DATA(dialog) = popup->dialog( title         = `Variant Read`
                                   contentheight = `50%`
                                   contentwidth  = `50%`
-                                  afterclose    = client->_event( 'CANCEL' ) ).
+                                  afterclose    = client->_event( `CANCEL` ) ).
 
-    dialog->table( mode  = 'SingleSelectLeft'
+    dialog->table( mode  = `SingleSelectLeft`
                    items = client->_bind_edit( mt_variant )
                 )->columns(
-                    )->column( )->text( 'Layout' )->get_parent(
-                    )->column( )->text( 'Description' )->get_parent(
-                    )->column( )->text( 'Default' )->get_parent(
+                    )->column( )->text( `Layout` )->get_parent(
+                    )->column( )->text( `Description` )->get_parent(
+                    )->column( )->text( `Default` )->get_parent(
                     )->get_parent(
                 )->items(
-                    )->column_list_item( selected = '{SELKZ}'
+                    )->column_list_item( selected = `{SELKZ}`
                         )->cells(
-                            )->text( '{S_DB/NAME}'
-                            )->text( '{S_DB/DESCR}'
-                            )->text( '{S_DB/CHECK_DEF}' ).
+                            )->text( `{S_DB/NAME}`
+                            )->text( `{S_DB/DESCR}`
+                            )->text( `{S_DB/CHECK_DEF}` ).
 
     dialog->buttons(
-        )->button( text  = 'Cancel'
-                   icon  = 'sap-icon://sys-cancel'
-                   press = client->_event( 'CANCEL' )
-     )->button( text  = 'Open'
-                icon  = 'sap-icon://accept'
-                press = client->_event( 'CONFIRM' )
-                type  = 'Emphasized' ).
+        )->button( text  = `Cancel`
+                   icon  = `sap-icon://sys-cancel`
+                   press = client->_event( `CANCEL` )
+        )->button( text  = `Open`
+                   icon  = `sap-icon://accept`
+                   press = client->_event( `CONFIRM` )
+                   type  = `Emphasized` ).
 
     client->popup_display( popup->stringify( ) ).
 
@@ -165,11 +158,15 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
 
     CASE client->get( )-event.
 
-      WHEN 'CANCEL'.
+      WHEN `CANCEL`.
         client->popup_destroy( ).
         client->nav_app_leave( ).
 
       WHEN `CONFIRM`.
+        IF NOT line_exists( mt_variant[ selkz = abap_true ] ).
+          client->message_toast_display( `Select a variant first` ).
+          RETURN.
+        ENDIF.
         DATA(ls_variant) = mt_variant[ selkz = abap_true ].
         ms_result-check_confirmed = abap_true.
         ms_result-s_variant       = ls_variant-s_db.
@@ -184,12 +181,9 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
 
         DATA(r_result) = NEW z2ui5_cl_sel_var_pop_read( ).
 
-        r_result->ms_variant = VALUE #(
-*                                        uname   = COND #( WHEN var_check_user = abap_true THEN sy-uname )
-                                        handle1 = var_handle1
+        r_result->ms_variant = VALUE #( handle1 = var_handle1
                                         handle2 = var_handle2
-                                        handle3 = var_handle3
-        ).
+                                        handle3 = var_handle3 ).
 
         r_result->db_read( ).
 

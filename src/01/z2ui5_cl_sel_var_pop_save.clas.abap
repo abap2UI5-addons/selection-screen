@@ -36,7 +36,6 @@ CLASS z2ui5_cl_sel_var_pop_save DEFINITION
     CLASS-METHODS factory
       IMPORTING
         val             TYPE z2ui5_cl_sel_multisel=>ty_s_result
-*        check_db_active TYPE abap_bool DEFAULT abap_true
         var_check_user  TYPE abap_bool DEFAULT abap_true
         var_handle1     TYPE clike     DEFAULT sy-repid
         var_handle2     TYPE clike     OPTIONAL
@@ -56,12 +55,8 @@ CLASS z2ui5_cl_sel_var_pop_save DEFINITION
       RETURNING
         VALUE(result) TYPE ty_s_result.
 
-
   PROTECTED SECTION.
-    DATA check_db_active   TYPE abap_bool.
-    DATA client            TYPE REF TO z2ui5_if_client.
-    DATA check_initialized TYPE abap_bool.
-    DATA mv_popup_name     TYPE LINE OF string_table.
+    DATA client TYPE REF TO z2ui5_if_client.
 
     METHODS popup_variant_save.
     METHODS init.
@@ -76,14 +71,12 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
   METHOD factory.
 
     r_result = NEW #( ).
-    r_result->s_variant  = val.
-*    r_result->check_db_active = check_db_active.
+    r_result->s_variant = val.
 
     r_result->ms_variant = VALUE #( uname   = COND #( WHEN var_check_user = abap_true THEN sy-uname )
                                     handle1 = var_handle1
                                     handle2 = var_handle2
-                                    handle3 = var_handle3
-    ).
+                                    handle3 = var_handle3 ).
 
   ENDMETHOD.
 
@@ -97,10 +90,10 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
 
     DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
 
-    DATA(dialog) = popup->dialog( title         = 'Variant Save'
+    DATA(dialog) = popup->dialog( title         = `Variant Save`
                                   contentheight = `50%`
                                   contentwidth  = `50%`
-                                  afterclose    = client->_event( 'DB_SAVE_CLOSE' ) ).
+                                  afterclose    = client->_event( `DB_SAVE_CLOSE` ) ).
 
     DATA(form) = dialog->simple_form( editable        = abap_true
                                       labelspanxl     = `4`
@@ -110,35 +103,34 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
                                       adjustlabelspan = abap_false
                                       ).
 
-    form->toolbar( )->title( 'Layout' ).
+    form->toolbar( )->title( `Layout` ).
 
-    form->content( 'form'
-                           )->label( 'Layout'
+    form->content( `form`
+                           )->label( `Layout`
                            )->input( client->_bind_edit( ms_variant_save-name )
-                           )->label( 'Description'
+                           )->label( `Description`
                            )->input( client->_bind_edit( ms_variant_save-description ) ).
 
     form->toolbar( )->title( `` ).
 
-    form->content( 'form'
-                           )->label( 'Default Layout'
-                           )->switch( type  = 'AcceptReject'
+    form->content( `form`
+                           )->label( `Default Layout`
+                           )->switch( type  = `AcceptReject`
                                       state = client->_bind_edit( ms_variant_save-check_default )
-                           )->label( 'User specific'
-                           )->switch( type  = 'AcceptReject'
-                                      state = client->_bind_edit( ms_variant_save-check_user )
-                           ).
+                           )->label( `User specific`
+                           )->switch( type  = `AcceptReject`
+                                      state = client->_bind_edit( ms_variant_save-check_user ) ).
 
     dialog->buttons(
-        )->button( text  = 'Cancel'
-                   icon  = 'sap-icon://sys-cancel'
-                   press = client->_event( 'DB_SAVE_CLOSE' )
-     )->button( text  = 'Save'
-                press = client->_event( 'DB_SAVE' )
-                type  = 'Success'
-                icon  = 'sap-icon://save' ).
+        )->button( text  = `Cancel`
+                   icon  = `sap-icon://sys-cancel`
+                   press = client->_event( `DB_SAVE_CLOSE` )
+        )->button( text  = `Save`
+                   press = client->_event( `DB_SAVE` )
+                   type  = `Success`
+                   icon  = `sap-icon://save` ).
 
-    client->popup_display( popup->get_root( )->xml_get( ) ).
+    client->popup_display( popup->stringify( ) ).
 
   ENDMETHOD.
 
@@ -149,8 +141,7 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
   METHOD z2ui5_if_app~main.
     me->client = client.
 
-    IF check_initialized = abap_false.
-      check_initialized = abap_true.
+    IF client->check_on_init( ).
       init( ).
       RETURN.
     ENDIF.
@@ -179,16 +170,12 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
                                                     name      = ms_variant_save-name
                                                     descr     = ms_variant_save-description
                                                     check_def = ms_variant_save-check_default
-                                                    check_usr = ms_variant_save-check_default
+                                                    check_usr = ms_variant_save-check_user
                                                     handle01  = ms_variant-handle1
-*                                                    handle02  =
-*                                                    handle03  = ms_variant-handle3
-                                ) data   = s_variant
-).
-
-
+                                                    handle02  = ms_variant-handle2
+                                                    handle03  = ms_variant-handle3 )
+                                  data   = s_variant ).
 
   ENDMETHOD.
-
 
 ENDCLASS.
