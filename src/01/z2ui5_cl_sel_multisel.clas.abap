@@ -179,8 +179,7 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
           IF ls_value-check_confirmed = abap_true.
 
             z2ui5_cl_util=>xml_parse( EXPORTING xml = ls_value-s_variant-data
-                                      IMPORTING any = ms_result
-            ).
+                                      IMPORTING any = ms_result ).
             IF mv_check_popup = abap_false.
               client->view_model_update( ).
             ELSE.
@@ -220,7 +219,7 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
         DATA(lo_popup3) = z2ui5_cl_sel_var_pop_read=>factory( var_check_user = abap_true
                                                               var_handle1    = ms_variant-handle01
                                                               var_handle2    = ms_variant-handle02
-      ).
+                                                              var_handle3    = ms_variant-handle03 ).
         client->nav_app_call( lo_popup3 ).
 
       WHEN `BUTTON_SAVE`.
@@ -228,7 +227,7 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
                                                               var_check_user = abap_true
                                                               var_handle1    = ms_variant-handle01
                                                               var_handle2    = ms_variant-handle02
-       ).
+                                                              var_handle3    = ms_variant-handle03 ).
         client->nav_app_call( lo_popup4 ).
 
       WHEN `DELETE_ALL`.
@@ -251,10 +250,8 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
 
   METHOD factory_by_name.
 
-    r_result = factory_by_data(
-                 val         = z2ui5_cl_util=>rtti_create_tab_by_name( val )
-                 s_variant   = s_variant
-               ).
+    r_result = factory_by_data( val       = z2ui5_cl_util=>rtti_create_tab_by_name( val )
+                                s_variant = s_variant ).
     r_result->ms_result-tab_name = val.
 
   ENDMETHOD.
@@ -265,9 +262,7 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
 
     IF ls_default-data IS NOT INITIAL.
       z2ui5_cl_util=>xml_parse( EXPORTING xml = ls_default-data
-                                IMPORTING any = ms_result
-     ).
-
+                                IMPORTING any = ms_result ).
     ENDIF.
 
   ENDMETHOD.

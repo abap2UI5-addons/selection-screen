@@ -79,8 +79,8 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
   METHOD db_read.
 
     mt_variant_db = z2ui5_cl_sel_var_db=>db_read( s_info = VALUE #( uname    = ms_variant-uname
-                                                                    name     = ms_variant-handle2
-                                                                    handle01 = ms_variant-handle1 ) ).
+                                                                    handle01 = ms_variant-handle1
+                                                                    handle02 = ms_variant-handle2 ) ).
 
     CLEAR mt_variant.
     LOOP AT mt_variant_db REFERENCE INTO DATA(lr_var).
@@ -163,6 +163,10 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
         client->nav_app_leave( ).
 
       WHEN `CONFIRM`.
+        IF NOT line_exists( mt_variant[ selkz = abap_true ] ).
+          client->message_toast_display( `Select a variant first` ).
+          RETURN.
+        ENDIF.
         DATA(ls_variant) = mt_variant[ selkz = abap_true ].
         ms_result-check_confirmed = abap_true.
         ms_result-s_variant       = ls_variant-s_db.

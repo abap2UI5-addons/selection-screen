@@ -56,8 +56,7 @@ CLASS z2ui5_cl_sel_var_pop_save DEFINITION
         VALUE(result) TYPE ty_s_result.
 
   PROTECTED SECTION.
-    DATA client            TYPE REF TO z2ui5_if_client.
-    DATA check_initialized TYPE abap_bool.
+    DATA client TYPE REF TO z2ui5_if_client.
 
     METHODS popup_variant_save.
     METHODS init.
@@ -142,8 +141,7 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
   METHOD z2ui5_if_app~main.
     me->client = client.
 
-    IF check_initialized = abap_false.
-      check_initialized = abap_true.
+    IF client->check_on_init( ).
       init( ).
       RETURN.
     ENDIF.
