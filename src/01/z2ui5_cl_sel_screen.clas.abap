@@ -63,6 +63,7 @@ CLASS z2ui5_cl_sel_screen IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD factory_selscreen.
 
     result = z2ui5_cl_sel_screen_sel=>factory( val ).
