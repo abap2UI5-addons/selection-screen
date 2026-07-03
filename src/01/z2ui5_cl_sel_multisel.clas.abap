@@ -25,9 +25,9 @@ CLASS z2ui5_cl_sel_multisel DEFINITION
         name             TYPE string,
         visible          TYPE abap_bool,
         check_value_help TYPE abap_bool,
-      END OF ty_S_component.
+      END OF ty_s_component.
 
-    DATA mt_component TYPE STANDARD TABLE OF ty_S_component WITH EMPTY KEY.
+    DATA mt_component TYPE STANDARD TABLE OF ty_s_component WITH EMPTY KEY.
 
     CLASS-METHODS factory_by_filter
       IMPORTING
@@ -40,7 +40,6 @@ CLASS z2ui5_cl_sel_multisel DEFINITION
       IMPORTING
         val             TYPE clike
         s_variant       TYPE z2ui5_cl_sel_var_db=>ty_s_db OPTIONAL
-*        report          type clike DEFAULT sy-repid
       RETURNING
         VALUE(r_result) TYPE REF TO z2ui5_cl_sel_multisel.
 
@@ -106,44 +105,38 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
 
   METHOD set_output.
 
-    DATA(tab) = view->table( " nodata          = `no conditions defined`
-                             items           = client->_bind( ms_result-t_filter )
-
-                             selectionchange = client->_event( 'SELCHANGE' )
-                ).
+    DATA(tab) = view->table( items           = client->_bind( ms_result-t_filter )
+                             selectionchange = client->_event( `SELCHANGE` ) ).
 
     tab->header_toolbar(
          )->toolbar(
       )->title( ms_result-tab_name
       )->toolbar_spacer(
         )->button( text  = `Clear`
-                   icon  = 'sap-icon://delete'
+                   icon  = `sap-icon://delete`
                    type  = `Transparent`
                    press = client->_event( val = `DELETE_ALL` )
-        )->button( text  = 'Load'
-                   icon  = 'sap-icon://download-from-cloud'
-                   press = client->_event( 'BUTTON_LOAD' )
-*                   type  = 'Emphasized'
-       )->button( text  = 'Save'
-                  icon  = 'sap-icon://save'
-                  press = client->_event( 'BUTTON_SAVE' )
-                  ).
+        )->button( text  = `Load`
+                   icon  = `sap-icon://download-from-cloud`
+                   press = client->_event( `BUTTON_LOAD` )
+        )->button( text  = `Save`
+                   icon  = `sap-icon://save`
+                   press = client->_event( `BUTTON_SAVE` ) ).
 
     tab->columns(
          )->column(
-             )->text( 'Name' )->get_parent(
+             )->text( `Name` )->get_parent(
          )->column(
-             )->text( 'Options' )->get_parent(
+             )->text( `Options` )->get_parent(
          )->column(
-             )->text( 'Select' )->get_parent(
+             )->text( `Select` )->get_parent(
          )->column(
-             )->text( 'Clear' )->get_parent(
+             )->text( `Clear` )->get_parent(
               ).
     DATA(cells) = tab->items( )->column_list_item( )->cells( ).
     cells->text( text = `{NAME}` ).
     cells->multi_input( tokens           = `{T_TOKEN}`
                         enabled          = abap_false
-*                        valueHelpOnly    = abap_true
                         valuehelprequest = client->_event( val   = `LIST_OPEN`
                                                            t_arg = VALUE #( ( `${NAME}` ) ) )
          )->tokens(
@@ -155,12 +148,11 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
     cells->button( text  = `Select`
                    press = client->_event( val   = `LIST_OPEN`
                                            t_arg = VALUE #( ( `${NAME}` ) ) ) ).
-    cells->button( icon  = 'sap-icon://delete'
+    cells->button( icon  = `sap-icon://delete`
                    type  = `Transparent`
                    text  = `Clear`
                    press = client->_event( val   = `LIST_DELETE`
-                                           t_arg = VALUE #( ( `${NAME}` ) ) )
-     ).
+                                           t_arg = VALUE #( ( `${NAME}` ) ) ) ).
 
   ENDMETHOD.
 
@@ -201,10 +193,7 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
       ENDTRY.
 
       TRY.
-          DATA(ls_value2) = CAST z2ui5_cl_sel_var_pop_save( client->get_app_prev( ) )->result( ).
-          IF ls_value2-check_confirmed = abap_true.
-
-          ENDIF.
+          CAST z2ui5_cl_sel_var_pop_save( client->get_app_prev( ) )->result( ).
           RETURN.
         CATCH cx_root.
       ENDTRY.
@@ -212,14 +201,12 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
 
     CASE client->get( )-event.
 
-      WHEN 'LIST_OPEN'.
-        result = abap_true.
+      WHEN `LIST_OPEN`.
         mv_popup_name = client->get_event_arg( 1 ).
         DATA(ls_sql) = ms_result-t_filter[ name = client->get_event_arg( 1 ) ].
         client->nav_app_call( z2ui5_cl_pop_get_range=>factory( ls_sql-t_range ) ).
-        "
-      WHEN 'LIST_DELETE'.
-        result = abap_true.
+
+      WHEN `LIST_DELETE`.
         mv_popup_name = client->get_event_arg( 1 ).
         CLEAR ms_result-t_filter[ name = mv_popup_name ]-t_range.
         CLEAR ms_result-t_filter[ name = mv_popup_name ]-t_token.
@@ -245,7 +232,6 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
         client->nav_app_call( lo_popup4 ).
 
       WHEN `DELETE_ALL`.
-        result = abap_true.
         LOOP AT ms_result-t_filter REFERENCE INTO DATA(lr_sql).
           CLEAR lr_sql->t_token.
           CLEAR lr_sql->t_range.

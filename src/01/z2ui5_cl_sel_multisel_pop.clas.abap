@@ -19,7 +19,6 @@ CLASS z2ui5_cl_sel_multisel_pop DEFINITION
       RETURNING
         VALUE(r_result) TYPE REF TO z2ui5_cl_sel_multisel_pop.
 
-
     TYPES:
       BEGIN OF ty_s_result,
         t_filter        TYPE z2ui5_cl_util=>ty_t_filter_multi,
@@ -33,7 +32,7 @@ CLASS z2ui5_cl_sel_multisel_pop DEFINITION
         VALUE(result) TYPE ty_s_result.
 
   PROTECTED SECTION.
-    DATA client            TYPE REF TO z2ui5_if_client.
+    DATA client TYPE REF TO z2ui5_if_client.
 
     METHODS popup_display.
 
@@ -49,17 +48,13 @@ CLASS z2ui5_cl_sel_multisel_pop IMPLEMENTATION.
 
     r_result = NEW #( ).
 
-    r_result->ms_variant      = VALUE #( uname   = COND #( WHEN var_check_user = abap_true THEN sy-uname )
-                                         handle01 = var_handle1
-                                         handle02 = var_handle2
-                                         handle03 = var_handle3
-         ).
+    r_result->ms_variant = VALUE #( uname    = COND #( WHEN var_check_user = abap_true THEN sy-uname )
+                                    handle01 = var_handle1
+                                    handle02 = var_handle2
+                                    handle03 = var_handle3 ).
 
-    r_result->mo_multiselect = z2ui5_cl_sel_multisel=>factory_by_data(
-                   val       = data
-                   check_popup = abap_true
-*                      s_variant =  value #( handle01 = 'TEST' )
-                 ).
+    r_result->mo_multiselect = z2ui5_cl_sel_multisel=>factory_by_data( val         = data
+                                                                       check_popup = abap_true ).
 
   ENDMETHOD.
 
@@ -72,21 +67,21 @@ CLASS z2ui5_cl_sel_multisel_pop IMPLEMENTATION.
   METHOD popup_display.
 
     DATA(lo_popup) = z2ui5_cl_xml_view=>factory_popup( ).
-    lo_popup = lo_popup->dialog( afterclose    = client->_event( 'BUTTON_CANCEL' )
+    lo_popup = lo_popup->dialog( afterclose    = client->_event( `BUTTON_CANCEL` )
                                  contentheight = `50%`
                                  contentwidth  = `50%`
-                                 title         = 'Define Filter Conditons' ).
+                                 title         = `Define Filter Conditions` ).
 
-    mo_multiselect->set_output( client = client view = lo_popup ).
-
+    mo_multiselect->set_output( client = client
+                                view   = lo_popup ).
 
     lo_popup->buttons(
-)->button( text  = 'Cancel'
-    icon  = 'sap-icon://sys-cancel'
-          press = client->_event( 'BUTTON_CANCEL' )
-)->button( text  = 'OK'
-          press = client->_event( 'BUTTON_CONFIRM' )
-          type  = 'Emphasized' ).
+        )->button( text  = `Cancel`
+                   icon  = `sap-icon://sys-cancel`
+                   press = client->_event( `BUTTON_CANCEL` )
+        )->button( text  = `OK`
+                   press = client->_event( `BUTTON_CONFIRM` )
+                   type  = `Emphasized` ).
 
     client->popup_display( lo_popup->stringify( ) ).
 
@@ -95,7 +90,6 @@ CLASS z2ui5_cl_sel_multisel_pop IMPLEMENTATION.
   METHOD result.
     result = ms_result.
   ENDMETHOD.
-
 
   METHOD z2ui5_if_app~main.
     me->client = client.
@@ -111,7 +105,6 @@ CLASS z2ui5_cl_sel_multisel_pop IMPLEMENTATION.
       ENDIF.
       RETURN.
     ENDIF.
-
 
     CASE client->get( )-event.
 
