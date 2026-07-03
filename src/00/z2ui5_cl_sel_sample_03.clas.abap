@@ -1,7 +1,7 @@
 CLASS z2ui5_cl_sel_sample_03 DEFINITION
   PUBLIC
   FINAL
-  CREATE PUBLIC .
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
     INTERFACES z2ui5_if_app.
@@ -15,7 +15,6 @@ CLASS z2ui5_cl_sel_sample_03 DEFINITION
     METHODS on_event.
     DATA client TYPE REF TO z2ui5_if_client.
   PRIVATE SECTION.
-
 
 ENDCLASS.
 
@@ -66,7 +65,7 @@ CLASS z2ui5_cl_sel_sample_03 IMPLEMENTATION.
 
     CASE client->get( )-event.
 
-      WHEN 'ABC'.
+      WHEN `ABC`.
 
     ENDCASE.
 

@@ -17,7 +17,6 @@ CLASS z2ui5_cl_sel_sample_01 DEFINITION PUBLIC.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-
 ENDCLASS.
 
 
@@ -31,7 +30,7 @@ CLASS z2ui5_cl_sel_sample_01 IMPLEMENTATION.
         set_data( ).
         client->view_model_update( ).
 
-      WHEN 'BACK'.
+      WHEN `BACK`.
         client->nav_app_leave( ).
 
     ENDCASE.
@@ -55,28 +54,27 @@ CLASS z2ui5_cl_sel_sample_01 IMPLEMENTATION.
     DATA(view) = z2ui5_cl_xml_view=>factory( ).
 
     view = view->shell( )->page( id             = `page_main`
-                                 title          = 'abap2UI5 - Select-Options'
-                                 navbuttonpress = client->_event( 'BACK' )
+                                 title          = `abap2UI5 - Select-Options`
+                                 navbuttonpress = client->_event( `BACK` )
                                  shownavbutton  = client->check_app_prev_stack( ) ).
 
     DATA(vbox) = view->vbox( ).
 
-    DATA(lo_panel) = vbox->panel(
-         expandable = abap_true
-         expanded         = client->_bind_edit( mv_expanded )
-         headertext       = |Selection Screen|
-    ).
+    DATA(lo_panel) = vbox->panel( expandable = abap_true
+                                  expanded   = client->_bind_edit( mv_expanded )
+                                  headertext = `Selection Screen` ).
 
-    mo_multiselect->set_output( client = client view = lo_panel ).
+    mo_multiselect->set_output( client = client
+                                view   = lo_panel ).
 
     ASSIGN mr_table->* TO FIELD-SYMBOL(<table>).
     DATA(tab) = vbox->table( client->_bind( <table> )
            )->header_toolbar(
-             )->overflow_toolbar(
-                 )->toolbar_spacer(
-               )->button( text  = `Go`
-                      press = client->_event( `BUTTON_START` )
-                      type  = `Emphasized`
+               )->overflow_toolbar(
+                   )->toolbar_spacer(
+                   )->button( text  = `Go`
+                              press = client->_event( `BUTTON_START` )
+                              type  = `Emphasized`
             )->get_parent( )->get_parent( ).
 
     DATA(lo_columns) = tab->columns( ).
@@ -114,14 +112,11 @@ CLASS z2ui5_cl_sel_sample_01 IMPLEMENTATION.
 
   ENDMETHOD.
 
-
   METHOD on_init.
 
     mr_table = z2ui5_cl_util=>rtti_create_tab_by_name( mv_tabname ).
-    mo_multiselect = z2ui5_cl_sel_multisel=>factory_by_name(
-                       val       = mv_tabname
-                      s_variant =  value #( handle01 = 'TEST' )
-                     ).
+    mo_multiselect = z2ui5_cl_sel_multisel=>factory_by_name( val       = mv_tabname
+                                                             s_variant = VALUE #( handle01 = `TEST` ) ).
 
     view_display( ).
 

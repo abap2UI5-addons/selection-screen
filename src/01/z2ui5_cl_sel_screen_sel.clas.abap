@@ -1,7 +1,7 @@
 CLASS z2ui5_cl_sel_screen_sel DEFINITION
   PUBLIC
   FINAL
-  CREATE PUBLIC .
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
 
@@ -9,7 +9,7 @@ CLASS z2ui5_cl_sel_screen_sel DEFINITION
       IMPORTING
         root TYPE REF TO z2ui5_cl_xml_view
       RETURNING
-        value(r_result) TYPE REF TO z2ui5_cl_sel_screen_sel.
+        VALUE(r_result) TYPE REF TO z2ui5_cl_sel_screen_sel.
 
     DATA mo_root TYPE REF TO z2ui5_cl_xml_view.
 
@@ -57,6 +57,7 @@ CLASS z2ui5_cl_sel_screen_sel IMPLEMENTATION.
     r_result->mo_root = root.
 
   ENDMETHOD.
+
   METHOD parameters.
 
   ENDMETHOD.
