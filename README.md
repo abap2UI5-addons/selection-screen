@@ -6,9 +6,9 @@
 # selection-screen
 
 #### Key Features
-* Ranges, Filter, Selection-Screens
+* Ranges, Filters, Selection-Screens
 * Persist Variants
-  
+
 #### Compatibility
 * S/4 Public Cloud and BTP ABAP Environment (ABAP for Cloud)
 * S/4 Private Cloud or On-Premise (ABAP for Cloud, Standard ABAP)
