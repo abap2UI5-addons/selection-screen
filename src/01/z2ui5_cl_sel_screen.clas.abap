@@ -1,7 +1,7 @@
 CLASS z2ui5_cl_sel_screen DEFINITION
   PUBLIC
   FINAL
-  CREATE PUBLIC .
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
     INTERFACES if_serializable_object.
@@ -36,6 +36,8 @@ ENDCLASS.
 CLASS z2ui5_cl_sel_screen IMPLEMENTATION.
 
   METHOD factory.
+
+    result = NEW #( ).
 
   ENDMETHOD.
 
