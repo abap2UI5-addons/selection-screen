@@ -18,7 +18,7 @@ CLASS z2ui5_cl_sel_screen DEFINITION
 
     METHODS factory_selscreen
       IMPORTING
-        val           TYPE REF TO z2ui5_cl_xml_view
+        val           TYPE REF TO z2ui5_cl_ui5_view_builder
       RETURNING
         VALUE(result) TYPE REF TO z2ui5_cl_sel_screen_sel.
 

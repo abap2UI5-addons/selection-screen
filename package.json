@@ -5,7 +5,12 @@
   "description": "Selection-Screens, Ranges, Filter and Variant Management for abap2UI5.",
   "scripts": {
     "syfixes": "find . -type f -name '*.abap' -exec sed -i -e 's/ RAISE EXCEPTION TYPE cx_sy_itab_line_not_found/ ASSERT 1 = 0/g' {} + ",
-    "rename": "abaplint .github/abaplint/rename.json --rename"
+    "rename": "abaplint .github/abaplint/rename.json --rename",
+    "lint": "abaplint ./abaplint.jsonc",
+    "check:cloud": "abaplint .github/abaplint/abap_cloud.jsonc",
+    "check:abap2ui5": "abap2ui5lint",
+    "check": "npm run lint && npm run check:cloud && npm run check:abap2ui5 && npm run rename",
+    "test": "npm run check"
   },
   "repository": {
     "type": "git",
@@ -17,11 +22,16 @@
   },
   "homepage": "https://github.com/abap2UI5-addons/selection-screen#readme",
   "devDependencies": {
-    "@abaplint/cli": "^2.119.14",
+    "@abaplint/cli": "^2.119.66",
     "@abaplint/database-sqlite": "^2.11.78",
     "@abaplint/runtime": "^2.13.22",
     "@abaplint/transpiler-cli": "^2.13.22",
     "@types/node": "^22.10.5",
-    "npm-check-updates": "^17.1.18"
+    "npm-check-updates": "^17.1.18",
+    "@abap2ui5/linter": "^0.2.1",
+    "@abap2ui5/render-runtime": "^0.1.1"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

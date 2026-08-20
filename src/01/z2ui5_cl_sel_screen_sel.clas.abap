@@ -7,11 +7,11 @@ CLASS z2ui5_cl_sel_screen_sel DEFINITION
 
     CLASS-METHODS factory
       IMPORTING
-        root TYPE REF TO z2ui5_cl_xml_view
+        root TYPE REF TO z2ui5_cl_ui5_view_builder
       RETURNING
         VALUE(r_result) TYPE REF TO z2ui5_cl_sel_screen_sel.
 
-    DATA mo_root TYPE REF TO z2ui5_cl_xml_view.
+    DATA mo_root TYPE REF TO z2ui5_cl_ui5_view_builder.
 
     METHODS parameters
       IMPORTING

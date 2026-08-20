@@ -66,22 +66,28 @@ CLASS z2ui5_cl_sel_multisel_pop IMPLEMENTATION.
 
   METHOD popup_display.
 
-    DATA(lo_popup) = z2ui5_cl_xml_view=>factory_popup( ).
-    lo_popup = lo_popup->dialog( afterclose    = client->_event( `BUTTON_CANCEL` )
-                                 contentheight = `50%`
-                                 contentwidth  = `50%`
-                                 title         = `Define Filter Conditions` ).
+    DATA(lo_popup) = z2ui5_cl_ui5_view_builder=>factory( 
+                         )->ele( n = `FragmentDefinition` ns = `core` 
+                         )->a( n = `xmlns` v = `sap.m` 
+                         )->a( n = `xmlns:core` v = `sap.ui.core` ).
+    lo_popup = lo_popup->ele( `Dialog` 
+                   )->a( n = `afterClose` v = client->_event( `BUTTON_CANCEL` ) 
+                   )->a( n = `contentHeight` v = `50%` 
+                   )->a( n = `contentWidth` v = `50%` 
+                   )->a( n = `title` v = `Define Filter Conditions` ).
 
     mo_multiselect->set_output( client = client
                                 view   = lo_popup ).
 
-    lo_popup->buttons(
-        )->button( text  = `Cancel`
-                   icon  = `sap-icon://sys-cancel`
-                   press = client->_event( `BUTTON_CANCEL` )
-        )->button( text  = `OK`
-                   press = client->_event( `BUTTON_CONFIRM` )
-                   type  = `Emphasized` ).
+    lo_popup->ele( `buttons` 
+        )->tag( `Button` 
+        )->a( n = `text` v = `Cancel` 
+        )->a( n = `icon` v = `sap-icon://sys-cancel` 
+        )->a( n = `press` v = client->_event( `BUTTON_CANCEL` ) 
+        )->tag( `Button` 
+        )->a( n = `text` v = `OK` 
+        )->a( n = `press` v = client->_event( `BUTTON_CONFIRM` ) 
+        )->a( n = `type` v = `Emphasized` ).
 
     client->popup_display( lo_popup->stringify( ) ).
 

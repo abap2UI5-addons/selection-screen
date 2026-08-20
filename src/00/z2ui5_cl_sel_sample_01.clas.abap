@@ -51,43 +51,68 @@ CLASS z2ui5_cl_sel_sample_01 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA(view) = z2ui5_cl_ui5_view_builder=>factory( 
+                     )->ele( n = `View` ns = `mvc` 
+                     )->a( n = `xmlns` v = `sap.m` 
+                     )->a( n = `xmlns:mvc` v = `sap.ui.core.mvc` 
+                     )->a( n = `xmlns:core` v = `sap.ui.core` 
+                     )->a( n = `displayBlock` v = `true` 
+                     )->a( n = `height` v = `100%` ).
 
-    view = view->shell( )->page( id             = `page_main`
-                                 title          = `abap2UI5 - Select-Options`
-                                 navbuttonpress = client->_event( `BACK` )
-                                 shownavbutton  = client->check_app_prev_stack( ) ).
+    view = view->ele( `Shell` 
+               )->ele( `Page` 
+               )->a( n = `id` v = `page_main` 
+               )->a( n = `title` v = `abap2UI5 - Select-Options` 
+               )->a( n = `navButtonPress` v = client->_event( `BACK` ) 
+               )->a( n = `showNavButton` b = client->check_app_prev_stack( ) ).
 
-    DATA(vbox) = view->vbox( ).
+    DATA(vbox) = view->ele( `VBox` ).
 
-    DATA(lo_panel) = vbox->panel( expandable = abap_true
-                                  expanded   = client->_bind_edit( mv_expanded )
-                                  headertext = `Selection Screen` ).
+    DATA(lo_panel) = vbox->ele( `Panel` 
+                         )->a( n = `expandable` b = abap_true 
+                         )->a( n = `expanded` v = client->_bind_edit( mv_expanded ) 
+                         )->a( n = `headerText` v = `Selection Screen` ).
 
     mo_multiselect->set_output( client = client
                                 view   = lo_panel ).
 
     ASSIGN mr_table->* TO FIELD-SYMBOL(<table>).
-    DATA(tab) = vbox->table( client->_bind( <table> )
-           )->header_toolbar(
-               )->overflow_toolbar(
-                   )->toolbar_spacer(
-                   )->button( text  = `Go`
-                              press = client->_event( `BUTTON_START` )
-                              type  = `Emphasized`
-            )->get_parent( )->get_parent( ).
+    DATA(tab) = vbox->ele( `Table` 
+                    )->a( n = `items` v = client->_bind( <table> ) 
+                    )->ele( `headerToolbar` 
+                    )->ele( `OverflowToolbar` 
+                    )->tag( `ToolbarSpacer` 
+                    )->tag( `Button` 
+                    )->a( n = `text` v = `Go` 
+                    )->a( n = `press` v = client->_event( `BUTTON_START` ) 
+                    )->a( n = `type` v = `Emphasized` 
+                    )->end( 
+                    )->end( ).
 
-    DATA(lo_columns) = tab->columns( ).
-    lo_columns->column( )->text( text = `SPRSL` ).
-    lo_columns->column( )->text( text = `ARBGB` ).
-    lo_columns->column( )->text( text = `MSGNR` ).
-    lo_columns->column( )->text( text = `TEXT` ).
+    DATA(lo_columns) = tab->ele( `columns` ).
+    lo_columns->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `SPRSL` ).
+    lo_columns->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `ARBGB` ).
+    lo_columns->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `MSGNR` ).
+    lo_columns->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `TEXT` ).
 
-    DATA(lo_cells) = tab->items( )->column_list_item( ).
-    lo_cells->text( `{SPRSL}` ).
-    lo_cells->text( `{ARBGB}` ).
-    lo_cells->text( `{MSGNR}` ).
-    lo_cells->text( `{TEXT}` ).
+    DATA(lo_cells) = tab->ele( `items` 
+                         )->ele( `ColumnListItem` ).
+    lo_cells->tag( `Text` 
+        )->a( n = `text` v = `{SPRSL}` ).
+    lo_cells->tag( `Text` 
+        )->a( n = `text` v = `{ARBGB}` ).
+    lo_cells->tag( `Text` 
+        )->a( n = `text` v = `{MSGNR}` ).
+    lo_cells->tag( `Text` 
+        )->a( n = `text` v = `{TEXT}` ).
 
     client->view_display( view->stringify( ) ).
 

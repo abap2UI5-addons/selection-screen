@@ -88,47 +88,66 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
 
   METHOD popup_variant_save.
 
-    DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA(popup) = z2ui5_cl_ui5_view_builder=>factory( 
+                      )->ele( n = `FragmentDefinition` ns = `core` 
+                      )->a( n = `xmlns` v = `sap.m` 
+                      )->a( n = `xmlns:core` v = `sap.ui.core` 
+                      )->a( n = `xmlns:form` v = `sap.ui.layout.form` ).
 
-    DATA(dialog) = popup->dialog( title         = `Variant Save`
-                                  contentheight = `50%`
-                                  contentwidth  = `50%`
-                                  afterclose    = client->_event( `DB_SAVE_CLOSE` ) ).
+    DATA(dialog) = popup->ele( `Dialog` 
+                       )->a( n = `title` v = `Variant Save` 
+                       )->a( n = `contentHeight` v = `50%` 
+                       )->a( n = `contentWidth` v = `50%` 
+                       )->a( n = `afterClose` v = client->_event( `DB_SAVE_CLOSE` ) ).
 
-    DATA(form) = dialog->simple_form( editable        = abap_true
-                                      labelspanxl     = `4`
-                                      labelspanl      = `4`
-                                      labelspanm      = `4`
-                                      labelspans      = `4`
-                                      adjustlabelspan = abap_false
-                                      ).
+    DATA(form) = dialog->ele( n = `SimpleForm` ns = `form` 
+                     )->a( n = `editable` b = abap_true 
+                     )->a( n = `labelSpanXL` v = `4` 
+                     )->a( n = `labelSpanL` v = `4` 
+                     )->a( n = `labelSpanM` v = `4` 
+                     )->a( n = `labelSpanS` v = `4` 
+                     )->a( n = `adjustLabelSpan` b = abap_false ).
 
-    form->toolbar( )->title( `Layout` ).
+    form->ele( `Toolbar` 
+        )->tag( `Title` 
+        )->a( n = `text` v = `Layout` ).
 
-    form->content( `form`
-                           )->label( `Layout`
-                           )->input( client->_bind_edit( ms_variant_save-name )
-                           )->label( `Description`
-                           )->input( client->_bind_edit( ms_variant_save-description ) ).
+    form->ele( n = `content` ns = `form` 
+        )->tag( `Label` 
+        )->a( n = `text` v = `Layout` 
+        )->tag( `Input` 
+        )->a( n = `value` v = client->_bind_edit( ms_variant_save-name ) 
+        )->tag( `Label` 
+        )->a( n = `text` v = `Description` 
+        )->tag( `Input` 
+        )->a( n = `value` v = client->_bind_edit( ms_variant_save-description ) ).
 
-    form->toolbar( )->title( `` ).
+    form->ele( `Toolbar` 
+        )->tag( `Title` 
+        )->a( n = `text` v = `` ).
 
-    form->content( `form`
-                           )->label( `Default Layout`
-                           )->switch( type  = `AcceptReject`
-                                      state = client->_bind_edit( ms_variant_save-check_default )
-                           )->label( `User specific`
-                           )->switch( type  = `AcceptReject`
-                                      state = client->_bind_edit( ms_variant_save-check_user ) ).
+    form->ele( n = `content` ns = `form` 
+        )->tag( `Label` 
+        )->a( n = `text` v = `Default Layout` 
+        )->tag( `Switch` 
+        )->a( n = `type` v = `AcceptReject` 
+        )->a( n = `state` v = client->_bind_edit( ms_variant_save-check_default ) 
+        )->tag( `Label` 
+        )->a( n = `text` v = `User specific` 
+        )->tag( `Switch` 
+        )->a( n = `type` v = `AcceptReject` 
+        )->a( n = `state` v = client->_bind_edit( ms_variant_save-check_user ) ).
 
-    dialog->buttons(
-        )->button( text  = `Cancel`
-                   icon  = `sap-icon://sys-cancel`
-                   press = client->_event( `DB_SAVE_CLOSE` )
-        )->button( text  = `Save`
-                   press = client->_event( `DB_SAVE` )
-                   type  = `Success`
-                   icon  = `sap-icon://save` ).
+    dialog->ele( `buttons` 
+        )->tag( `Button` 
+        )->a( n = `text` v = `Cancel` 
+        )->a( n = `icon` v = `sap-icon://sys-cancel` 
+        )->a( n = `press` v = client->_event( `DB_SAVE_CLOSE` ) 
+        )->tag( `Button` 
+        )->a( n = `text` v = `Save` 
+        )->a( n = `press` v = client->_event( `DB_SAVE` ) 
+        )->a( n = `type` v = `Success` 
+        )->a( n = `icon` v = `sap-icon://save` ).
 
     client->popup_display( popup->stringify( ) ).
 
