@@ -110,35 +110,55 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
 
   METHOD popup_variant_read.
 
-    DATA(popup) = z2ui5_cl_xml_view=>factory_popup( ).
+    DATA(popup) = z2ui5_cl_ui5_view_builder=>factory( 
+                      )->ele( n = `FragmentDefinition` ns = `core` 
+                      )->a( n = `xmlns` v = `sap.m` 
+                      )->a( n = `xmlns:core` v = `sap.ui.core` ).
 
-    DATA(dialog) = popup->dialog( title         = `Variant Read`
-                                  contentheight = `50%`
-                                  contentwidth  = `50%`
-                                  afterclose    = client->_event( `CANCEL` ) ).
+    DATA(dialog) = popup->ele( `Dialog` 
+                       )->a( n = `title` v = `Variant Read` 
+                       )->a( n = `contentHeight` v = `50%` 
+                       )->a( n = `contentWidth` v = `50%` 
+                       )->a( n = `afterClose` v = client->_event( `CANCEL` ) ).
 
-    dialog->table( mode  = `SingleSelectLeft`
-                   items = client->_bind_edit( mt_variant )
-                )->columns(
-                    )->column( )->text( `Layout` )->get_parent(
-                    )->column( )->text( `Description` )->get_parent(
-                    )->column( )->text( `Default` )->get_parent(
-                    )->get_parent(
-                )->items(
-                    )->column_list_item( selected = `{SELKZ}`
-                        )->cells(
-                            )->text( `{S_DB/NAME}`
-                            )->text( `{S_DB/DESCR}`
-                            )->text( `{S_DB/CHECK_DEF}` ).
+    dialog->ele( `Table` 
+        )->a( n = `mode` v = `SingleSelectLeft` 
+        )->a( n = `items` v = client->_bind_edit( mt_variant ) 
+        )->ele( `columns` 
+        )->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `Layout` 
+        )->end( 
+        )->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `Description` 
+        )->end( 
+        )->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `Default` 
+        )->end( 
+        )->end( 
+        )->ele( `items` 
+        )->ele( `ColumnListItem` 
+        )->a( n = `selected` v = `{SELKZ}` 
+        )->ele( `cells` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `{S_DB/NAME}` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `{S_DB/DESCR}` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `{S_DB/CHECK_DEF}` ).
 
-    dialog->buttons(
-        )->button( text  = `Cancel`
-                   icon  = `sap-icon://sys-cancel`
-                   press = client->_event( `CANCEL` )
-        )->button( text  = `Open`
-                   icon  = `sap-icon://accept`
-                   press = client->_event( `CONFIRM` )
-                   type  = `Emphasized` ).
+    dialog->ele( `buttons` 
+        )->tag( `Button` 
+        )->a( n = `text` v = `Cancel` 
+        )->a( n = `icon` v = `sap-icon://sys-cancel` 
+        )->a( n = `press` v = client->_event( `CANCEL` ) 
+        )->tag( `Button` 
+        )->a( n = `text` v = `Open` 
+        )->a( n = `icon` v = `sap-icon://accept` 
+        )->a( n = `press` v = client->_event( `CONFIRM` ) 
+        )->a( n = `type` v = `Emphasized` ).
 
     client->popup_display( popup->stringify( ) ).
 

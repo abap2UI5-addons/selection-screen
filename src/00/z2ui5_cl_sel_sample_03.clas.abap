@@ -46,7 +46,15 @@ CLASS z2ui5_cl_sel_sample_03 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(page) = z2ui5_cl_xml_view=>factory( )->shell( )->page( ).
+    DATA(page) = z2ui5_cl_ui5_view_builder=>factory( 
+                     )->ele( n = `View` ns = `mvc` 
+                     )->a( n = `xmlns` v = `sap.m` 
+                     )->a( n = `xmlns:mvc` v = `sap.ui.core.mvc` 
+                     )->a( n = `xmlns:core` v = `sap.ui.core` 
+                     )->a( n = `displayBlock` v = `true` 
+                     )->a( n = `height` v = `100%` 
+                     )->ele( `Shell` 
+                     )->ele( `Page` ).
 
     DATA(lo_selscreen) = mo_screen->factory_selscreen( page ).
     lo_selscreen->parameters( mv_param ).

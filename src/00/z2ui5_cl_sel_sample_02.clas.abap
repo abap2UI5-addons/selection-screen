@@ -68,40 +68,68 @@ CLASS z2ui5_cl_sel_sample_02 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA(view) = z2ui5_cl_ui5_view_builder=>factory( 
+                     )->ele( n = `View` ns = `mvc` 
+                     )->a( n = `xmlns` v = `sap.m` 
+                     )->a( n = `xmlns:mvc` v = `sap.ui.core.mvc` 
+                     )->a( n = `xmlns:core` v = `sap.ui.core` 
+                     )->a( n = `displayBlock` v = `true` 
+                     )->a( n = `height` v = `100%` ).
 
-    view = view->shell( )->page( id             = `page_main`
-                                 title          = `abap2UI5 - Select-Options`
-                                 navbuttonpress = client->_event( `BACK` )
-                                 shownavbutton  = client->check_app_prev_stack( ) ).
+    view = view->ele( `Shell` 
+               )->ele( `Page` 
+               )->a( n = `id` v = `page_main` 
+               )->a( n = `title` v = `abap2UI5 - Select-Options` 
+               )->a( n = `navButtonPress` v = client->_event( `BACK` ) 
+               )->a( n = `showNavButton` b = client->check_app_prev_stack( ) ).
 
-    DATA(vbox) = view->vbox( ).
+    DATA(vbox) = view->ele( `VBox` ).
 
-    DATA(tab) = vbox->table( items = client->_bind( val = mt_table )
-           )->header_toolbar(
-               )->overflow_toolbar(
-                   )->toolbar_spacer(
-                   )->button( text  = `Filter`
-                              press = client->_event( `PREVIEW_FILTER` )
-                              icon  = `sap-icon://filter`
-                   )->button( text  = `Go`
-                              press = client->_event( `BUTTON_START` )
-                              type  = `Emphasized`
-            )->get_parent( )->get_parent( ).
+    DATA(tab) = vbox->ele( `Table` 
+                    )->a( n = `items` v = client->_bind( val = mt_table ) 
+                    )->ele( `headerToolbar` 
+                    )->ele( `OverflowToolbar` 
+                    )->tag( `ToolbarSpacer` 
+                    )->tag( `Button` 
+                    )->a( n = `text` v = `Filter` 
+                    )->a( n = `press` v = client->_event( `PREVIEW_FILTER` ) 
+                    )->a( n = `icon` v = `sap-icon://filter` 
+                    )->tag( `Button` 
+                    )->a( n = `text` v = `Go` 
+                    )->a( n = `press` v = client->_event( `BUTTON_START` ) 
+                    )->a( n = `type` v = `Emphasized` 
+                    )->end( 
+                    )->end( ).
 
-    DATA(lo_columns) = tab->columns( ).
-    lo_columns->column( )->text( text = `Product` ).
-    lo_columns->column( )->text( text = `Date` ).
-    lo_columns->column( )->text( text = `Name` ).
-    lo_columns->column( )->text( text = `Location` ).
-    lo_columns->column( )->text( text = `Quantity` ).
+    DATA(lo_columns) = tab->ele( `columns` ).
+    lo_columns->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `Product` ).
+    lo_columns->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `Date` ).
+    lo_columns->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `Name` ).
+    lo_columns->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `Location` ).
+    lo_columns->ele( `Column` 
+        )->tag( `Text` 
+        )->a( n = `text` v = `Quantity` ).
 
-    DATA(lo_cells) = tab->items( )->column_list_item( ).
-    lo_cells->text( `{PRODUCT}` ).
-    lo_cells->text( `{CREATE_DATE}` ).
-    lo_cells->text( `{CREATE_BY}` ).
-    lo_cells->text( `{STORAGE_LOCATION}` ).
-    lo_cells->text( `{QUANTITY}` ).
+    DATA(lo_cells) = tab->ele( `items` 
+                         )->ele( `ColumnListItem` ).
+    lo_cells->tag( `Text` 
+        )->a( n = `text` v = `{PRODUCT}` ).
+    lo_cells->tag( `Text` 
+        )->a( n = `text` v = `{CREATE_DATE}` ).
+    lo_cells->tag( `Text` 
+        )->a( n = `text` v = `{CREATE_BY}` ).
+    lo_cells->tag( `Text` 
+        )->a( n = `text` v = `{STORAGE_LOCATION}` ).
+    lo_cells->tag( `Text` 
+        )->a( n = `text` v = `{QUANTITY}` ).
 
     client->view_display( view->stringify( ) ).
 
