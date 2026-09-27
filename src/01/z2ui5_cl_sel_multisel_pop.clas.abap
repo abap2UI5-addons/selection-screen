@@ -6,7 +6,6 @@ CLASS z2ui5_cl_sel_multisel_pop DEFINITION
     INTERFACES z2ui5_if_app.
 
     DATA mo_multiselect TYPE REF TO z2ui5_cl_sel_multisel.
-    DATA ms_variant TYPE z2ui5_cl_sel_var_db=>ty_s_db.
 
     CLASS-METHODS factory_by_data
       IMPORTING
@@ -25,14 +24,14 @@ CLASS z2ui5_cl_sel_multisel_pop DEFINITION
         check_confirmed TYPE abap_bool,
       END OF ty_s_result.
 
-    DATA ms_result TYPE ty_s_result.
-
     METHODS result
       RETURNING
         VALUE(result) TYPE ty_s_result.
 
   PROTECTED SECTION.
-    DATA client TYPE REF TO z2ui5_if_client.
+    DATA client     TYPE REF TO z2ui5_if_client.
+    DATA ms_variant TYPE z2ui5_cl_sel_var_db=>ty_s_db.
+    DATA ms_result  TYPE ty_s_result.
 
     METHODS popup_display.
 
@@ -66,27 +65,27 @@ CLASS z2ui5_cl_sel_multisel_pop IMPLEMENTATION.
 
   METHOD popup_display.
 
-    DATA(lo_popup) = z2ui5_cl_ui5_view_builder=>factory( 
-                         )->ele( n = `FragmentDefinition` ns = `core` 
-                         )->a( n = `xmlns` v = `sap.m` 
+    DATA(lo_popup) = z2ui5_cl_ui5_view_builder=>factory(
+                         )->ele( n = `FragmentDefinition` ns = `core`
+                         )->a( n = `xmlns` v = `sap.m`
                          )->a( n = `xmlns:core` v = `sap.ui.core` ).
-    lo_popup = lo_popup->ele( `Dialog` 
-                   )->a( n = `afterClose` v = client->_event( `BUTTON_CANCEL` ) 
-                   )->a( n = `contentHeight` v = `50%` 
-                   )->a( n = `contentWidth` v = `50%` 
+    lo_popup = lo_popup->ele( `Dialog`
+                   )->a( n = `afterClose` v = client->_event( `BUTTON_CANCEL` )
+                   )->a( n = `contentHeight` v = `50%`
+                   )->a( n = `contentWidth` v = `50%`
                    )->a( n = `title` v = `Define Filter Conditions` ).
 
     mo_multiselect->set_output( client = client
                                 view   = lo_popup ).
 
-    lo_popup->ele( `buttons` 
-        )->tag( `Button` 
-        )->a( n = `text` v = `Cancel` 
-        )->a( n = `icon` v = `sap-icon://sys-cancel` 
-        )->a( n = `press` v = client->_event( `BUTTON_CANCEL` ) 
-        )->tag( `Button` 
-        )->a( n = `text` v = `OK` 
-        )->a( n = `press` v = client->_event( `BUTTON_CONFIRM` ) 
+    lo_popup->ele( `buttons`
+        )->tag( `Button`
+        )->a( n = `text` v = `Cancel`
+        )->a( n = `icon` v = `sap-icon://sys-cancel`
+        )->a( n = `press` v = client->_event( `BUTTON_CANCEL` )
+        )->tag( `Button`
+        )->a( n = `text` v = `OK`
+        )->a( n = `press` v = client->_event( `BUTTON_CONFIRM` )
         )->a( n = `type` v = `Emphasized` ).
 
     client->popup_display( lo_popup->stringify( ) ).

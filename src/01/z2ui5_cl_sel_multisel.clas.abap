@@ -105,71 +105,71 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
 
   METHOD set_output.
 
-    DATA(tab) = view->ele( `Table` 
-                    )->a( n = `items` v = client->_bind( ms_result-t_filter ) 
+    DATA(tab) = view->ele( `Table`
+                    )->a( n = `items` v = client->_bind( ms_result-t_filter )
                     )->a( n = `selectionChange` v = client->_event( `SELCHANGE` ) ).
 
-    tab->ele( `headerToolbar` 
-        )->ele( `Toolbar` 
-        )->tag( `Title` 
-        )->a( n = `text` v = ms_result-tab_name 
-        )->tag( `ToolbarSpacer` 
-        )->tag( `Button` 
-        )->a( n = `text` v = `Clear` 
-        )->a( n = `icon` v = `sap-icon://delete` 
-        )->a( n = `type` v = `Transparent` 
-        )->a( n = `press` v = client->_event( val = `DELETE_ALL` ) 
-        )->tag( `Button` 
-        )->a( n = `text` v = `Load` 
-        )->a( n = `icon` v = `sap-icon://download-from-cloud` 
-        )->a( n = `press` v = client->_event( `BUTTON_LOAD` ) 
-        )->tag( `Button` 
-        )->a( n = `text` v = `Save` 
-        )->a( n = `icon` v = `sap-icon://save` 
+    tab->ele( `headerToolbar`
+        )->ele( `Toolbar`
+        )->tag( `Title`
+        )->a( n = `text` v = ms_result-tab_name
+        )->tag( `ToolbarSpacer`
+        )->tag( `Button`
+        )->a( n = `text` v = `Clear`
+        )->a( n = `icon` v = `sap-icon://delete`
+        )->a( n = `type` v = `Transparent`
+        )->a( n = `press` v = client->_event( val = `DELETE_ALL` )
+        )->tag( `Button`
+        )->a( n = `text` v = `Load`
+        )->a( n = `icon` v = `sap-icon://download-from-cloud`
+        )->a( n = `press` v = client->_event( `BUTTON_LOAD` )
+        )->tag( `Button`
+        )->a( n = `text` v = `Save`
+        )->a( n = `icon` v = `sap-icon://save`
         )->a( n = `press` v = client->_event( `BUTTON_SAVE` ) ).
 
-    tab->ele( `columns` 
-        )->ele( `Column` 
-        )->tag( `Text` 
-        )->a( n = `text` v = `Name` 
-        )->end( 
-        )->ele( `Column` 
-        )->tag( `Text` 
-        )->a( n = `text` v = `Options` 
-        )->end( 
-        )->ele( `Column` 
-        )->tag( `Text` 
-        )->a( n = `text` v = `Select` 
-        )->end( 
-        )->ele( `Column` 
-        )->tag( `Text` 
-        )->a( n = `text` v = `Clear` 
+    tab->ele( `columns`
+        )->ele( `Column`
+        )->tag( `Text`
+        )->a( n = `text` v = `Name`
+        )->end(
+        )->ele( `Column`
+        )->tag( `Text`
+        )->a( n = `text` v = `Options`
+        )->end(
+        )->ele( `Column`
+        )->tag( `Text`
+        )->a( n = `text` v = `Select`
+        )->end(
+        )->ele( `Column`
+        )->tag( `Text`
+        )->a( n = `text` v = `Clear`
         )->end( ).
-    DATA(cells) = tab->ele( `items` 
-                      )->ele( `ColumnListItem` 
+    DATA(cells) = tab->ele( `items`
+                      )->ele( `ColumnListItem`
                       )->ele( `cells` ).
-    cells->tag( `Text` 
+    cells->tag( `Text`
         )->a( n = `text` v = `{NAME}` ).
-    cells->ele( `MultiInput` 
-        )->a( n = `tokens` v = `{T_TOKEN}` 
-        )->a( n = `enabled` b = abap_false 
+    cells->ele( `MultiInput`
+        )->a( n = `tokens` v = `{T_TOKEN}`
+        )->a( n = `enabled` b = abap_false
         )->a( n = `valueHelpRequest` v = client->_event( val   = `LIST_OPEN`
-                                                           t_arg = VALUE #( ( `${NAME}` ) ) ) 
-        )->ele( `tokens` 
-        )->tag( `Token` 
-        )->a( n = `key` v = `{KEY}` 
-        )->a( n = `text` v = `{TEXT}` 
-        )->a( n = `visible` v = `{VISIBLE}` 
-        )->a( n = `selected` v = `{SELKZ}` 
+                                                           t_arg = VALUE #( ( `${NAME}` ) ) )
+        )->ele( `tokens`
+        )->tag( `Token`
+        )->a( n = `key` v = `{KEY}`
+        )->a( n = `text` v = `{TEXT}`
+        )->a( n = `visible` v = `{VISIBLE}`
+        )->a( n = `selected` v = `{SELKZ}`
         )->a( n = `editable` v = `{EDITABLE}` ).
-    cells->tag( `Button` 
-        )->a( n = `text` v = `Select` 
+    cells->tag( `Button`
+        )->a( n = `text` v = `Select`
         )->a( n = `press` v = client->_event( val   = `LIST_OPEN`
                                            t_arg = VALUE #( ( `${NAME}` ) ) ) ).
-    cells->tag( `Button` 
-        )->a( n = `icon` v = `sap-icon://delete` 
-        )->a( n = `type` v = `Transparent` 
-        )->a( n = `text` v = `Clear` 
+    cells->tag( `Button`
+        )->a( n = `icon` v = `sap-icon://delete`
+        )->a( n = `type` v = `Transparent`
+        )->a( n = `text` v = `Clear`
         )->a( n = `press` v = client->_event( val   = `LIST_DELETE`
                                            t_arg = VALUE #( ( `${NAME}` ) ) ) ).
 
