@@ -13,8 +13,6 @@ CLASS z2ui5_cl_sel_var_pop_save DEFINITION
         handle3 TYPE string,
       END OF ty_s_variant.
 
-    DATA ms_variant TYPE ty_s_variant.
-
     TYPES:
       BEGIN OF ty_s_variant_out,
         s_variant     TYPE ty_s_variant,
@@ -27,11 +25,7 @@ CLASS z2ui5_cl_sel_var_pop_save DEFINITION
       END OF ty_s_variant_out.
     TYPES ty_t_variant_out TYPE STANDARD TABLE OF ty_s_variant_out WITH EMPTY KEY.
 
-    DATA mt_variant      TYPE ty_t_variant_out.
-
     DATA ms_variant_save TYPE ty_s_variant_out.
-
-    DATA s_variant       TYPE z2ui5_cl_sel_multisel=>ty_s_result.
 
     CLASS-METHODS factory
       IMPORTING
@@ -49,14 +43,16 @@ CLASS z2ui5_cl_sel_var_pop_save DEFINITION
         check_confirmed TYPE abap_bool,
       END OF ty_s_result.
 
-    DATA ms_result TYPE ty_s_result.
-
     METHODS result
       RETURNING
         VALUE(result) TYPE ty_s_result.
 
   PROTECTED SECTION.
-    DATA client TYPE REF TO z2ui5_if_client.
+    DATA client     TYPE REF TO z2ui5_if_client.
+    DATA ms_variant TYPE ty_s_variant.
+    DATA mt_variant TYPE ty_t_variant_out.
+    DATA s_variant  TYPE z2ui5_cl_sel_multisel=>ty_s_result.
+    DATA ms_result  TYPE ty_s_result.
 
     METHODS popup_variant_save.
     METHODS init.
@@ -88,65 +84,65 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
 
   METHOD popup_variant_save.
 
-    DATA(popup) = z2ui5_cl_ui5_view_builder=>factory( 
-                      )->ele( n = `FragmentDefinition` ns = `core` 
-                      )->a( n = `xmlns` v = `sap.m` 
-                      )->a( n = `xmlns:core` v = `sap.ui.core` 
+    DATA(popup) = z2ui5_cl_ui5_view_builder=>factory(
+                      )->ele( n = `FragmentDefinition` ns = `core`
+                      )->a( n = `xmlns` v = `sap.m`
+                      )->a( n = `xmlns:core` v = `sap.ui.core`
                       )->a( n = `xmlns:form` v = `sap.ui.layout.form` ).
 
-    DATA(dialog) = popup->ele( `Dialog` 
-                       )->a( n = `title` v = `Variant Save` 
-                       )->a( n = `contentHeight` v = `50%` 
-                       )->a( n = `contentWidth` v = `50%` 
+    DATA(dialog) = popup->ele( `Dialog`
+                       )->a( n = `title` v = `Variant Save`
+                       )->a( n = `contentHeight` v = `50%`
+                       )->a( n = `contentWidth` v = `50%`
                        )->a( n = `afterClose` v = client->_event( `DB_SAVE_CLOSE` ) ).
 
-    DATA(form) = dialog->ele( n = `SimpleForm` ns = `form` 
-                     )->a( n = `editable` b = abap_true 
-                     )->a( n = `labelSpanXL` v = `4` 
-                     )->a( n = `labelSpanL` v = `4` 
-                     )->a( n = `labelSpanM` v = `4` 
-                     )->a( n = `labelSpanS` v = `4` 
+    DATA(form) = dialog->ele( n = `SimpleForm` ns = `form`
+                     )->a( n = `editable` b = abap_true
+                     )->a( n = `labelSpanXL` v = `4`
+                     )->a( n = `labelSpanL` v = `4`
+                     )->a( n = `labelSpanM` v = `4`
+                     )->a( n = `labelSpanS` v = `4`
                      )->a( n = `adjustLabelSpan` b = abap_false ).
 
-    form->ele( `Toolbar` 
-        )->tag( `Title` 
+    form->ele( `Toolbar`
+        )->tag( `Title`
         )->a( n = `text` v = `Layout` ).
 
-    form->ele( n = `content` ns = `form` 
-        )->tag( `Label` 
-        )->a( n = `text` v = `Layout` 
-        )->tag( `Input` 
-        )->a( n = `value` v = client->_bind_edit( ms_variant_save-name ) 
-        )->tag( `Label` 
-        )->a( n = `text` v = `Description` 
-        )->tag( `Input` 
+    form->ele( n = `content` ns = `form`
+        )->tag( `Label`
+        )->a( n = `text` v = `Layout`
+        )->tag( `Input`
+        )->a( n = `value` v = client->_bind_edit( ms_variant_save-name )
+        )->tag( `Label`
+        )->a( n = `text` v = `Description`
+        )->tag( `Input`
         )->a( n = `value` v = client->_bind_edit( ms_variant_save-description ) ).
 
-    form->ele( `Toolbar` 
-        )->tag( `Title` 
+    form->ele( `Toolbar`
+        )->tag( `Title`
         )->a( n = `text` v = `` ).
 
-    form->ele( n = `content` ns = `form` 
-        )->tag( `Label` 
-        )->a( n = `text` v = `Default Layout` 
-        )->tag( `Switch` 
-        )->a( n = `type` v = `AcceptReject` 
-        )->a( n = `state` v = client->_bind_edit( ms_variant_save-check_default ) 
-        )->tag( `Label` 
-        )->a( n = `text` v = `User specific` 
-        )->tag( `Switch` 
-        )->a( n = `type` v = `AcceptReject` 
+    form->ele( n = `content` ns = `form`
+        )->tag( `Label`
+        )->a( n = `text` v = `Default Layout`
+        )->tag( `Switch`
+        )->a( n = `type` v = `AcceptReject`
+        )->a( n = `state` v = client->_bind_edit( ms_variant_save-check_default )
+        )->tag( `Label`
+        )->a( n = `text` v = `User specific`
+        )->tag( `Switch`
+        )->a( n = `type` v = `AcceptReject`
         )->a( n = `state` v = client->_bind_edit( ms_variant_save-check_user ) ).
 
-    dialog->ele( `buttons` 
-        )->tag( `Button` 
-        )->a( n = `text` v = `Cancel` 
-        )->a( n = `icon` v = `sap-icon://sys-cancel` 
-        )->a( n = `press` v = client->_event( `DB_SAVE_CLOSE` ) 
-        )->tag( `Button` 
-        )->a( n = `text` v = `Save` 
-        )->a( n = `press` v = client->_event( `DB_SAVE` ) 
-        )->a( n = `type` v = `Success` 
+    dialog->ele( `buttons`
+        )->tag( `Button`
+        )->a( n = `text` v = `Cancel`
+        )->a( n = `icon` v = `sap-icon://sys-cancel`
+        )->a( n = `press` v = client->_event( `DB_SAVE_CLOSE` )
+        )->tag( `Button`
+        )->a( n = `text` v = `Save`
+        )->a( n = `press` v = client->_event( `DB_SAVE` )
+        )->a( n = `type` v = `Success`
         )->a( n = `icon` v = `sap-icon://save` ).
 
     client->popup_display( popup->stringify( ) ).

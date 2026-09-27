@@ -13,8 +13,6 @@ CLASS z2ui5_cl_sel_var_pop_read DEFINITION
         handle3 TYPE string,
       END OF ty_s_variant.
 
-    DATA ms_variant TYPE ty_s_variant.
-
     TYPES:
       BEGIN OF ty_s_variant_out,
         s_variant  TYPE ty_s_variant,
@@ -29,7 +27,6 @@ CLASS z2ui5_cl_sel_var_pop_read DEFINITION
     TYPES ty_t_variant_out TYPE STANDARD TABLE OF ty_s_variant_out WITH EMPTY KEY.
 
     DATA mt_variant      TYPE ty_t_variant_out.
-    DATA mt_variant_db   TYPE z2ui5_cl_sel_var_db=>ty_t_db.
 
     DATA ms_variant_save TYPE ty_s_variant_out.
 
@@ -49,8 +46,6 @@ CLASS z2ui5_cl_sel_var_pop_read DEFINITION
         check_confirmed TYPE abap_bool,
       END OF ty_s_result.
 
-    DATA ms_result TYPE ty_s_result.
-
     METHODS result
       RETURNING
         VALUE(result) TYPE ty_s_result.
@@ -64,7 +59,10 @@ CLASS z2ui5_cl_sel_var_pop_read DEFINITION
         VALUE(result) TYPE ty_s_result.
 
   PROTECTED SECTION.
-    DATA client TYPE REF TO z2ui5_if_client.
+    DATA client        TYPE REF TO z2ui5_if_client.
+    DATA ms_variant    TYPE ty_s_variant.
+    DATA mt_variant_db TYPE z2ui5_cl_sel_var_db=>ty_t_db.
+    DATA ms_result     TYPE ty_s_result.
 
     METHODS popup_variant_read.
     METHODS init.
@@ -110,54 +108,54 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
 
   METHOD popup_variant_read.
 
-    DATA(popup) = z2ui5_cl_ui5_view_builder=>factory( 
-                      )->ele( n = `FragmentDefinition` ns = `core` 
-                      )->a( n = `xmlns` v = `sap.m` 
+    DATA(popup) = z2ui5_cl_ui5_view_builder=>factory(
+                      )->ele( n = `FragmentDefinition` ns = `core`
+                      )->a( n = `xmlns` v = `sap.m`
                       )->a( n = `xmlns:core` v = `sap.ui.core` ).
 
-    DATA(dialog) = popup->ele( `Dialog` 
-                       )->a( n = `title` v = `Variant Read` 
-                       )->a( n = `contentHeight` v = `50%` 
-                       )->a( n = `contentWidth` v = `50%` 
+    DATA(dialog) = popup->ele( `Dialog`
+                       )->a( n = `title` v = `Variant Read`
+                       )->a( n = `contentHeight` v = `50%`
+                       )->a( n = `contentWidth` v = `50%`
                        )->a( n = `afterClose` v = client->_event( `CANCEL` ) ).
 
-    dialog->ele( `Table` 
-        )->a( n = `mode` v = `SingleSelectLeft` 
-        )->a( n = `items` v = client->_bind_edit( mt_variant ) 
-        )->ele( `columns` 
-        )->ele( `Column` 
-        )->tag( `Text` 
-        )->a( n = `text` v = `Layout` 
-        )->end( 
-        )->ele( `Column` 
-        )->tag( `Text` 
-        )->a( n = `text` v = `Description` 
-        )->end( 
-        )->ele( `Column` 
-        )->tag( `Text` 
-        )->a( n = `text` v = `Default` 
-        )->end( 
-        )->end( 
-        )->ele( `items` 
-        )->ele( `ColumnListItem` 
-        )->a( n = `selected` v = `{SELKZ}` 
-        )->ele( `cells` 
-        )->tag( `Text` 
-        )->a( n = `text` v = `{S_DB/NAME}` 
-        )->tag( `Text` 
-        )->a( n = `text` v = `{S_DB/DESCR}` 
-        )->tag( `Text` 
+    dialog->ele( `Table`
+        )->a( n = `mode` v = `SingleSelectLeft`
+        )->a( n = `items` v = client->_bind_edit( mt_variant )
+        )->ele( `columns`
+        )->ele( `Column`
+        )->tag( `Text`
+        )->a( n = `text` v = `Layout`
+        )->end(
+        )->ele( `Column`
+        )->tag( `Text`
+        )->a( n = `text` v = `Description`
+        )->end(
+        )->ele( `Column`
+        )->tag( `Text`
+        )->a( n = `text` v = `Default`
+        )->end(
+        )->end(
+        )->ele( `items`
+        )->ele( `ColumnListItem`
+        )->a( n = `selected` v = `{SELKZ}`
+        )->ele( `cells`
+        )->tag( `Text`
+        )->a( n = `text` v = `{S_DB/NAME}`
+        )->tag( `Text`
+        )->a( n = `text` v = `{S_DB/DESCR}`
+        )->tag( `Text`
         )->a( n = `text` v = `{S_DB/CHECK_DEF}` ).
 
-    dialog->ele( `buttons` 
-        )->tag( `Button` 
-        )->a( n = `text` v = `Cancel` 
-        )->a( n = `icon` v = `sap-icon://sys-cancel` 
-        )->a( n = `press` v = client->_event( `CANCEL` ) 
-        )->tag( `Button` 
-        )->a( n = `text` v = `Open` 
-        )->a( n = `icon` v = `sap-icon://accept` 
-        )->a( n = `press` v = client->_event( `CONFIRM` ) 
+    dialog->ele( `buttons`
+        )->tag( `Button`
+        )->a( n = `text` v = `Cancel`
+        )->a( n = `icon` v = `sap-icon://sys-cancel`
+        )->a( n = `press` v = client->_event( `CANCEL` )
+        )->tag( `Button`
+        )->a( n = `text` v = `Open`
+        )->a( n = `icon` v = `sap-icon://accept`
+        )->a( n = `press` v = client->_event( `CONFIRM` )
         )->a( n = `type` v = `Emphasized` ).
 
     client->popup_display( popup->stringify( ) ).
@@ -209,7 +207,7 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
 
         result-t_filter = r_result->mt_variant[ check_def = abap_true ]-t_filter.
 
-      CATCH cx_root.
+      CATCH cx_root ##NO_HANDLER.
     ENDTRY.
   ENDMETHOD.
 
