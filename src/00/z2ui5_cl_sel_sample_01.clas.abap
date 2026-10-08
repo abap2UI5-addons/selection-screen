@@ -40,12 +40,15 @@ CLASS z2ui5_cl_sel_sample_01 IMPLEMENTATION.
 
   METHOD set_data.
 
+    FIELD-SYMBOLS <tab> TYPE ANY TABLE.
+
     DATA(lv_where) = z2ui5_cl_util=>filter_get_sql_where( mo_multiselect->ms_result-t_filter ).
+    ASSIGN mr_table->* TO <tab>.
     SELECT FROM (mv_tabname)
      FIELDS
        *
       WHERE (lv_where)
-     INTO TABLE @mr_table->*
+     INTO TABLE @<tab>
      UP TO 100 ROWS.
 
   ENDMETHOD.
