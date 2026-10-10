@@ -53,6 +53,7 @@ CLASS z2ui5_cl_sel_multisel_pop IMPLEMENTATION.
                                     handle03 = var_handle3 ).
 
     r_result->mo_multiselect = z2ui5_cl_sel_multisel=>factory_by_data( val         = data
+                                                                       s_variant   = r_result->ms_variant
                                                                        check_popup = abap_true ).
 
   ENDMETHOD.
