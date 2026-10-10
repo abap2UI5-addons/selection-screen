@@ -106,8 +106,7 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
   METHOD set_output.
 
     DATA(tab) = view->ele( `Table`
-                    )->a( n = `items` v = client->_bind( ms_result-t_filter )
-                    )->a( n = `selectionChange` v = client->_event( `SELCHANGE` ) ).
+                    )->a( n = `items` v = client->_bind( ms_result-t_filter ) ).
 
     tab->ele( `headerToolbar`
         )->ele( `Toolbar`

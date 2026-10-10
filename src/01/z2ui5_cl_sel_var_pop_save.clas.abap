@@ -73,6 +73,9 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
                                     handle1 = var_handle1
                                     handle2 = var_handle2
                                     handle3 = var_handle3 ).
+    " the switch starts where the caller stands: user-specific unless it
+    " asked for variants without a user
+    r_result->ms_variant_save-check_user = var_check_user.
 
   ENDMETHOD.
 
@@ -181,7 +184,10 @@ CLASS z2ui5_cl_sel_var_pop_save IMPLEMENTATION.
     ms_variant_save-t_filter = ms_result-t_filter.
     INSERT ms_variant_save INTO TABLE mt_variant.
 
-    z2ui5_cl_sel_var_db=>db_save( s_info = VALUE #( uname     = ms_variant-uname
+    " "User specific" decides who sees the variant: saved with the user
+    " name only the user, saved without one everybody
+    z2ui5_cl_sel_var_db=>db_save( s_info = VALUE #( uname     = COND #( WHEN ms_variant_save-check_user = abap_true
+                                                                        THEN sy-uname )
                                                     name      = ms_variant_save-name
                                                     descr     = ms_variant_save-description
                                                     check_def = ms_variant_save-check_default

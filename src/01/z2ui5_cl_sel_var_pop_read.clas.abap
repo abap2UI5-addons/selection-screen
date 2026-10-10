@@ -78,7 +78,8 @@ CLASS z2ui5_cl_sel_var_pop_read IMPLEMENTATION.
 
     mt_variant_db = z2ui5_cl_sel_var_db=>db_read( s_info = VALUE #( uname    = ms_variant-uname
                                                                     handle01 = ms_variant-handle1
-                                                                    handle02 = ms_variant-handle2 ) ).
+                                                                    handle02 = ms_variant-handle2
+                                                                    handle03 = ms_variant-handle3 ) ).
 
     CLEAR mt_variant.
     LOOP AT mt_variant_db REFERENCE INTO DATA(lr_var).
