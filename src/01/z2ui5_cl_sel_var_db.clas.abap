@@ -48,7 +48,20 @@ CLASS z2ui5_cl_sel_var_db IMPLEMENTATION.
   METHOD db_save.
 
     DATA(ls_db) = s_info.
-    ls_db-uuid = z2ui5_cl_util=>uuid_get_c32( ).
+
+    " saving under a name that exists replaces that variant
+    SELECT SINGLE FROM z2ui5_t_13
+      FIELDS uuid
+      WHERE uname    = @s_info-uname
+        AND handle01 = @s_info-handle01
+        AND handle02 = @s_info-handle02
+        AND handle03 = @s_info-handle03
+        AND name     = @s_info-name
+      INTO @ls_db-uuid.
+    IF sy-subrc <> 0.
+      ls_db-uuid = z2ui5_cl_util=>uuid_get_c32( ).
+    ENDIF.
+
     ls_db-data = z2ui5_cl_util=>xml_stringify( data ).
 
     MODIFY z2ui5_t_13 FROM @ls_db.
