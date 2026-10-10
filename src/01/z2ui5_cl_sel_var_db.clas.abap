@@ -64,6 +64,17 @@ CLASS z2ui5_cl_sel_var_db IMPLEMENTATION.
 
     ls_db-data = z2ui5_cl_util=>xml_stringify( data ).
 
+    " one default per scope - same user (or shared) and handles: a new
+    " default takes the flag from the variant that had it
+    IF ls_db-check_def = abap_true.
+      UPDATE z2ui5_t_13 SET check_def = @abap_false
+        WHERE uname    = @s_info-uname
+          AND handle01 = @s_info-handle01
+          AND handle02 = @s_info-handle02
+          AND handle03 = @s_info-handle03
+          AND uuid    <> @ls_db-uuid.
+    ENDIF.
+
     MODIFY z2ui5_t_13 FROM @ls_db.
     COMMIT WORK AND WAIT.
 
