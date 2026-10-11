@@ -86,6 +86,12 @@ METHOD z2ui5_if_app~main.
 ENDMETHOD.
 ```
 
+The select-options are bound to the view, so `ms_result-t_filter` - field
+names included - comes back from the browser. Before the names go into a
+dynamic `WHERE`, keep only those that are fields of your table, as
+`z2ui5_cl_sel_sample_01` does: a forged name could otherwise carry a condition
+or a subquery on another table.
+
 As a filter popup over an internal table (condensed from
 `z2ui5_cl_sel_sample_02`):
 
