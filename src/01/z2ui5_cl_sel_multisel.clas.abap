@@ -189,7 +189,7 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
             client->view_model_update( ).
             RETURN.
           ENDIF.
-        CATCH cx_root.
+        CATCH cx_root ##NO_HANDLER.
       ENDTRY.
 
       TRY.
@@ -206,13 +206,13 @@ CLASS z2ui5_cl_sel_multisel IMPLEMENTATION.
 
           ENDIF.
           RETURN.
-        CATCH cx_root.
+        CATCH cx_root ##NO_HANDLER.
       ENDTRY.
 
       TRY.
           CAST z2ui5_cl_sel_var_pop_save( client->get_app_prev( ) )->result( ).
           RETURN.
-        CATCH cx_root.
+        CATCH cx_root ##NO_HANDLER.
       ENDTRY.
     ENDIF.
 
