@@ -1,0 +1,117 @@
+CLASS zabap2ui5_cl_sel_var_db DEFINITION
+  PUBLIC FINAL
+  CREATE PUBLIC.
+
+  PUBLIC SECTION.
+    TYPES ty_s_db TYPE zabap2ui5_t_13.
+    TYPES ty_t_db TYPE STANDARD TABLE OF zabap2ui5_t_13 WITH EMPTY KEY.
+
+    CLASS-METHODS db_read_default
+      IMPORTING
+        s_info        TYPE zabap2ui5_t_13
+      RETURNING
+        VALUE(result) TYPE ty_s_db.
+
+    CLASS-METHODS db_read
+      IMPORTING
+        s_info        TYPE zabap2ui5_t_13
+      RETURNING
+        VALUE(result) TYPE ty_t_db.
+
+    CLASS-METHODS db_save
+      IMPORTING
+        s_info TYPE zabap2ui5_t_13
+        data   TYPE data.
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+CLASS zabap2ui5_cl_sel_var_db IMPLEMENTATION.
+
+  METHOD db_read.
+
+    " the user's own variants and the ones saved for everybody (no user),
+    " of exactly this caller - all three handles
+    SELECT FROM zabap2ui5_t_13
+      FIELDS
+       *
+      WHERE ( uname = @s_info-uname OR uname = @space )
+        AND handle01 = @s_info-handle01
+        AND handle02 = @s_info-handle02
+        AND handle03 = @s_info-handle03
+      INTO TABLE @result.
+
+  ENDMETHOD.
+
+  METHOD db_save.
+
+    DATA(ls_db) = s_info.
+
+    " saving under a name that exists replaces that variant
+    SELECT SINGLE FROM zabap2ui5_t_13
+      FIELDS uuid
+      WHERE uname    = @s_info-uname
+        AND handle01 = @s_info-handle01
+        AND handle02 = @s_info-handle02
+        AND handle03 = @s_info-handle03
+        AND name     = @s_info-name
+      INTO @ls_db-uuid.
+    IF sy-subrc <> 0.
+      ls_db-uuid = z2ui5_cl_util=>uuid_get_c32( ).
+    ENDIF.
+
+    ls_db-data = z2ui5_cl_util=>xml_stringify( data ).
+
+    " one default per scope - same user (or shared) and handles: a new
+    " default takes the flag from the variant that had it
+    IF ls_db-check_def = abap_true.
+      UPDATE zabap2ui5_t_13 SET check_def = @abap_false
+        WHERE uname    = @s_info-uname
+          AND handle01 = @s_info-handle01
+          AND handle02 = @s_info-handle02
+          AND handle03 = @s_info-handle03
+          AND uuid    <> @ls_db-uuid.
+    ENDIF.
+
+    MODIFY zabap2ui5_t_13 FROM @ls_db.
+    COMMIT WORK AND WAIT.
+
+  ENDMETHOD.
+
+  METHOD db_read_default.
+
+    IF s_info-uname IS INITIAL.
+      DATA(lv_uname) = sy-uname.
+    ELSE.
+      lv_uname = s_info-uname.
+    ENDIF.
+
+    SELECT SINGLE FROM zabap2ui5_t_13
+      FIELDS
+       *
+      WHERE uname     = @lv_uname
+        AND handle01  = @s_info-handle01
+        AND handle02  = @s_info-handle02
+        AND handle03  = @s_info-handle03
+        AND check_def = @abap_true
+      INTO @result.
+
+    IF sy-subrc = 0.
+      RETURN.
+    ENDIF.
+
+    SELECT SINGLE FROM zabap2ui5_t_13
+      FIELDS
+       *
+      WHERE uname     = @space
+        AND handle01  = @s_info-handle01
+        AND handle02  = @s_info-handle02
+        AND handle03  = @s_info-handle03
+        AND check_def = @abap_true
+      INTO @result.
+
+  ENDMETHOD.
+
+ENDCLASS.

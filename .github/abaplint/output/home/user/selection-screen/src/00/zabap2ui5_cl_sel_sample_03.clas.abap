@@ -1,0 +1,82 @@
+CLASS zabap2ui5_cl_sel_sample_03 DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC.
+
+  PUBLIC SECTION.
+    INTERFACES z2ui5_if_app.
+
+    DATA mo_screen TYPE REF TO zabap2ui5_cl_sel_screen.
+
+  PROTECTED SECTION.
+    DATA mv_param TYPE string.
+
+    METHODS view_display.
+    METHODS on_navigated.
+    METHODS on_event.
+    DATA client TYPE REF TO z2ui5_if_client.
+  PRIVATE SECTION.
+
+ENDCLASS.
+
+
+
+CLASS zabap2ui5_cl_sel_sample_03 IMPLEMENTATION.
+
+  METHOD z2ui5_if_app~main.
+    me->client = client.
+
+    IF client->check_on_init( ).
+      mo_screen = zabap2ui5_cl_sel_screen=>factory( ).
+      view_display( ).
+      RETURN.
+    ENDIF.
+
+    IF mo_screen->main( client ).
+      RETURN.
+    ENDIF.
+
+    IF client->check_on_navigated( ).
+      on_navigated( ).
+    ELSE.
+      on_event( ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD view_display.
+
+    DATA(page) = z2ui5_cl_ui5_view_builder=>factory(
+                     )->ele( n = `View` ns = `mvc`
+                     )->a( n = `xmlns` v = `sap.m`
+                     )->a( n = `xmlns:mvc` v = `sap.ui.core.mvc`
+                     )->a( n = `displayBlock` v = `true`
+                     )->a( n = `height` v = `100%`
+                     )->ele( `Shell`
+                     )->ele( `Page` ).
+
+    DATA(lo_selscreen) = mo_screen->factory_selscreen( page ).
+    lo_selscreen->parameters( mv_param ).
+
+    client->view_display( page->stringify( ) ).
+
+  ENDMETHOD.
+
+
+  METHOD on_navigated.
+
+  ENDMETHOD.
+
+
+  METHOD on_event.
+
+    CASE client->get( )-event.
+
+      WHEN `ABC`.
+
+    ENDCASE.
+
+  ENDMETHOD.
+
+ENDCLASS.

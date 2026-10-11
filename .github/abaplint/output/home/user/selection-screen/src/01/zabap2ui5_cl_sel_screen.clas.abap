@@ -1,0 +1,73 @@
+CLASS zabap2ui5_cl_sel_screen DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC.
+
+  PUBLIC SECTION.
+    INTERFACES if_serializable_object.
+
+    CLASS-METHODS factory
+      RETURNING
+        VALUE(result) TYPE REF TO zabap2ui5_cl_sel_screen.
+
+    METHODS main
+      IMPORTING
+        client        TYPE REF TO z2ui5_if_client
+      RETURNING
+        VALUE(result) TYPE abap_bool.
+
+    METHODS factory_selscreen
+      IMPORTING
+        val           TYPE REF TO z2ui5_cl_ui5_view_builder
+      RETURNING
+        VALUE(result) TYPE REF TO zabap2ui5_cl_sel_screen_sel.
+
+  PROTECTED SECTION.
+    DATA client TYPE REF TO z2ui5_if_client.
+    METHODS on_navigated.
+    METHODS on_event.
+
+  PRIVATE SECTION.
+
+ENDCLASS.
+
+
+
+CLASS zabap2ui5_cl_sel_screen IMPLEMENTATION.
+
+  METHOD factory.
+
+    result = NEW #( ).
+
+  ENDMETHOD.
+
+
+  METHOD main.
+    me->client = client.
+
+    IF client->check_on_navigated( ).
+      on_navigated( ).
+    ELSE.
+      on_event( ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD on_navigated.
+
+  ENDMETHOD.
+
+
+  METHOD on_event.
+
+  ENDMETHOD.
+
+
+  METHOD factory_selscreen.
+
+    result = zabap2ui5_cl_sel_screen_sel=>factory( val ).
+
+  ENDMETHOD.
+
+ENDCLASS.
