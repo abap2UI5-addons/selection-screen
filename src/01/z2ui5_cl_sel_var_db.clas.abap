@@ -33,11 +33,20 @@ CLASS z2ui5_cl_sel_var_db IMPLEMENTATION.
   METHOD db_read.
 
     " the user's own variants and the ones saved for everybody (no user),
-    " of exactly this caller - all three handles
+    " of exactly this caller - all three handles. The own ones also for a
+    " caller without var_check_user: "User specific" in the save popup
+    " stores a variant under the user then, and db_read_default( ) applies
+    " it - it has to be in the list as well
+    IF s_info-uname IS INITIAL.
+      DATA(lv_uname) = sy-uname.
+    ELSE.
+      lv_uname = s_info-uname.
+    ENDIF.
+
     SELECT FROM z2ui5_t_13
       FIELDS
        *
-      WHERE ( uname = @s_info-uname OR uname = @space )
+      WHERE ( uname = @lv_uname OR uname = @space )
         AND handle01 = @s_info-handle01
         AND handle02 = @s_info-handle02
         AND handle03 = @s_info-handle03
