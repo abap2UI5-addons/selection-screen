@@ -32,11 +32,15 @@ CLASS z2ui5_cl_sel_var_db IMPLEMENTATION.
 
   METHOD db_read.
 
+    " the user's own variants and the ones saved for everybody (no user),
+    " of exactly this caller - all three handles
     SELECT FROM z2ui5_t_13
       FIELDS
        *
-      WHERE uname    = @s_info-uname
+      WHERE ( uname = @s_info-uname OR uname = @space )
         AND handle01 = @s_info-handle01
+        AND handle02 = @s_info-handle02
+        AND handle03 = @s_info-handle03
       INTO TABLE @result.
 
   ENDMETHOD.
@@ -44,8 +48,32 @@ CLASS z2ui5_cl_sel_var_db IMPLEMENTATION.
   METHOD db_save.
 
     DATA(ls_db) = s_info.
-    ls_db-uuid = z2ui5_cl_util=>uuid_get_c32( ).
+
+    " saving under a name that exists replaces that variant
+    SELECT SINGLE FROM z2ui5_t_13
+      FIELDS uuid
+      WHERE uname    = @s_info-uname
+        AND handle01 = @s_info-handle01
+        AND handle02 = @s_info-handle02
+        AND handle03 = @s_info-handle03
+        AND name     = @s_info-name
+      INTO @ls_db-uuid.
+    IF sy-subrc <> 0.
+      ls_db-uuid = z2ui5_cl_util=>uuid_get_c32( ).
+    ENDIF.
+
     ls_db-data = z2ui5_cl_util=>xml_stringify( data ).
+
+    " one default per scope - same user (or shared) and handles: a new
+    " default takes the flag from the variant that had it
+    IF ls_db-check_def = abap_true.
+      UPDATE z2ui5_t_13 SET check_def = @abap_false
+        WHERE uname    = @s_info-uname
+          AND handle01 = @s_info-handle01
+          AND handle02 = @s_info-handle02
+          AND handle03 = @s_info-handle03
+          AND uuid    <> @ls_db-uuid.
+    ENDIF.
 
     MODIFY z2ui5_t_13 FROM @ls_db.
     COMMIT WORK AND WAIT.
@@ -63,8 +91,10 @@ CLASS z2ui5_cl_sel_var_db IMPLEMENTATION.
     SELECT SINGLE FROM z2ui5_t_13
       FIELDS
        *
-      WHERE uname    = @lv_uname
-        AND handle01 = @s_info-handle01
+      WHERE uname     = @lv_uname
+        AND handle01  = @s_info-handle01
+        AND handle02  = @s_info-handle02
+        AND handle03  = @s_info-handle03
         AND check_def = @abap_true
       INTO @result.
 
@@ -75,7 +105,10 @@ CLASS z2ui5_cl_sel_var_db IMPLEMENTATION.
     SELECT SINGLE FROM z2ui5_t_13
       FIELDS
        *
-      WHERE handle01 = @s_info-handle01
+      WHERE uname     = @space
+        AND handle01  = @s_info-handle01
+        AND handle02  = @s_info-handle02
+        AND handle03  = @s_info-handle03
         AND check_def = @abap_true
       INTO @result.
 
