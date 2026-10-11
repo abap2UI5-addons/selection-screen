@@ -62,7 +62,11 @@ nothing built with it.
 
 ## Conventions
 
-- ABAP object names follow ``z2ui5_cl_sel_*``, enforced by `abaplint.jsonc`.
+- ABAP classes are named ``z2ui5_cl_sel_*``; the variant table keeps its old name
+  `z2ui5_t_13` (it holds data - a rename would drop it on every installation).
+  No check enforces the prefix: `allowed_object_naming` in `abaplint.jsonc` only
+  checks length and characters, and `.github/abaplint/rename.json` only proves
+  that every `z2ui5_*` object still renames cleanly. Keep to it in review.
 - English for code, comments, commit messages, pull requests and issues.
 - All text files are LF-only (`.gitattributes`).
 - The ecosystem-wide rules — workflow and npm-script naming, toolchain versions,
