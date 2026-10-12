@@ -5,6 +5,12 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # @types/node follows engines.node (>=22), not the newest Node: typings
+      # of a later major accept APIs the supported runtime does not have.
+      # Move it with the engine, by hand (CONVENTIONS.md section 4).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       # one pull request for the toolchain rather than one per pin
       toolchain:
